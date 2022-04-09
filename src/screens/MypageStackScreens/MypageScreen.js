@@ -7,16 +7,15 @@ import {
   View,
   Button,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { Ionicons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/AntDesign";
 
 export default (props) => {
   return (
     <ScrollView>
       <SafeAreaView>
+        <Ionicons name="person-circle" size={100} color="#696969" />
         <View>
-          <Text style={styles.buttonContainer}>
-            <Icon name="user-circle-o" size={80} color="#696969" />
-          </Text>
           <Text style={styles.membersty}>
             닉네임 : 막걸리에 파전{"\n"}
             ID : abc {"\n"}

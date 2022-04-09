@@ -8,15 +8,23 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SplashScreen = ({ navigation }) => {
+export default (props) => {
   const [animating, setAnimating] = useState(true);
+
+  const isLogin = async () => {
+    const userId = await AsyncStorage.getItem("user_id");
+    console.log(userId === null);
+    if (userId) {
+      props.navigation.navigate("MainTab", { loading: false });
+    } else {
+      props.navigation.navigate("Auth", { loading: false });
+    }
+  };
 
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-      AsyncStorage.getItem("user_id").then((value) =>
-        navigation.replace(value === null ? "Auth" : "MainTab")
-      );
+      isLogin();
     }, 3000);
   }, []);
 
@@ -57,8 +65,6 @@ const SplashScreen = ({ navigation }) => {
     </View>
   );
 };
-
-export default SplashScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -46,17 +46,18 @@ export default (props) => {
 
     const response = await Api.postLogin(userId, userPassword);
     console.log(response);
-    if (response.token) {
+    //response.token
+    if (response.success === true) {
       alert("로그인 성공");
-      await AsyncStorage.setItem("token", response.token);
-      await AsyncStorage.setItem("login_id", userId);
+      //await AsyncStorage.setItem("token", response.token);
+      await AsyncStorage.setItem("user_id", userId);
       AsyncStorage.getItem("login_id")
         .then((value) => {
           console.log("로그인 >> ", value);
         })
         .done();
       setLoading(false);
-      navigation.replace("MainTab");
+      props.navigation.navigate("MainTab");
       return;
     } else {
       alert("로그인 실패");
