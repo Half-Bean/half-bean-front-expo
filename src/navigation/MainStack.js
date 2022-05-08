@@ -8,16 +8,19 @@ import LoginScreen from "../screens/LoginScreen";
 import SignupScreen from "../screens/SignupScreen";
 // MypageStackScreens
 import MypageScreen from "../screens/MypageStackScreens/MypageScreen";
+import MemberInfoUpdate from "../screens/MypageStackScreens/MemberInfoUpdate";
 // ChatStackScreens
 import ChatListScreen from "../screens/ChatStackScreens/ChatListScreen";
 // NoticeStackScreens
 import NoticeListScreen from "../screens/NoticeStackScreens/NoticeListScreen";
 // ProductStackScreens
 import ProductListScreen from "../screens/ProductStackScreens/ProductListScreen";
+import ProductEnroll from "../screens/ProductStackScreens/ProductEnroll";
+import ProductUpdate from "../screens/ProductStackScreens/ProductUpdate";
 // HomeStackScreens
 import ProductsAroundOfMe from "../screens/HomeStackScreens/ProductsAroundOfMe";
-import MemberInfoUpdate from "../screens/MypageStackScreens/MemberInfoUpdate";
-
+import ProductRead from "../screens/HomeStackScreens/ProductRead";
+import Peed from "../screens/HomeStackScreens/Peed";
 import BackBtn from "../components/BackBtn";
 
 const Stack = createStackNavigator();
@@ -34,6 +37,16 @@ const ProductStackScreen = () => {
       <ProductStack.Screen
         name="Product"
         component={ProductListScreen}
+        options={{ headerShown: false }}
+      />
+      <ProductStack.Screen
+        name="ProductEnroll"
+        component={ProductEnroll}
+        options={{ headerShown: false }}
+      />
+      <ProductStack.Screen
+        name="ProductUpdate"
+        component={ProductUpdate}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -63,6 +76,16 @@ const HomeStackScreen = () => {
       <HomeStack.Screen
         name="Home"
         component={ProductsAroundOfMe}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="Peed"
+        component={Peed}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="ProductRead"
+        component={ProductRead}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
