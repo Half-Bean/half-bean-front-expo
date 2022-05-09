@@ -17,9 +17,11 @@ import NoticeListScreen from "../screens/NoticeStackScreens/NoticeListScreen";
 import ProductListScreen from "../screens/ProductStackScreens/ProductListScreen";
 import ProductEnroll from "../screens/ProductStackScreens/ProductEnroll";
 import ProductUpdate from "../screens/ProductStackScreens/ProductUpdate";
+import ProductRead from "../screens/ProductStackScreens/ProductRead";
+import ProductsList from "../screens/ProductStackScreens/ProductsList";
 // HomeStackScreens
 import ProductsAroundOfMe from "../screens/HomeStackScreens/ProductsAroundOfMe";
-import ProductRead from "../screens/HomeStackScreens/ProductRead";
+import NewProductRead from "../screens/HomeStackScreens/NewProductRead";
 import Peed from "../screens/HomeStackScreens/Peed";
 import BackBtn from "../components/BackBtn";
 
@@ -37,6 +39,16 @@ const ProductStackScreen = () => {
       <ProductStack.Screen
         name="Product"
         component={ProductListScreen}
+        options={{ headerShown: false }}
+      />
+      <ProductStack.Screen
+        name="ProductsList"
+        component={ProductsList}
+        options={{ headerShown: false }}
+      />
+      <ProductStack.Screen
+        name="ProductRead"
+        component={ProductRead}
         options={{ headerShown: false }}
       />
       <ProductStack.Screen
@@ -84,8 +96,8 @@ const HomeStackScreen = () => {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
-        name="ProductRead"
-        component={ProductRead}
+        name="NewProductRead"
+        component={NewProductRead}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

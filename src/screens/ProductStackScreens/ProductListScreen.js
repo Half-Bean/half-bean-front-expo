@@ -13,63 +13,21 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import ProductsList from "./ProductsList.js";
 
 export default (props) => {
   return (
     <SafeAreaView>
       <ScrollView>
+        <ProductsList />
         <View style={styles.container}>
-          <View style={styles.topArea}>
-            <View style={styles.TextArea_s}>
-              <Text style={styles.Text}>
-                <View style={styles.Ic}>
-                  <Icon name="photo" size={30} color="#696969" />
-                </View>
-                등록 게시물 1
-              </Text>
-            </View>
-            <View style={styles.TextArea_s}>
-              <Text style={styles.Text}>
-                <View style={styles.Ic}>
-                  <Icon name="photo" size={30} color="#696969" />
-                </View>
-                등록 게시물 2
-              </Text>
-            </View>
-            <View style={styles.TextArea_s}>
-              <Text style={styles.Text}>
-                <View style={styles.Ic}>
-                  <Icon name="photo" size={30} color="#696969" />
-                </View>
-                등록 게시물 3
-              </Text>
-            </View>
-            <View style={styles.TextArea_s}>
-              <Text style={styles.Text}>
-                <View style={styles.Ic}>
-                  <Icon name="photo" size={30} color="#696969" />
-                </View>
-                등록 게시물 4
-              </Text>
-            </View>
-
-            <View style={styles.btn_s}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => props.navigation.push("ProductEnroll")}
-              >
-                <Text style={{ color: "black", fontSize: wp("4%") }}>등록</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.btn_s1}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => props.navigation.push("ProductUpdate")}
-              >
-                <Text style={{ color: "black", fontSize: wp("4%") }}>수정</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.btn_s}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => props.navigation.push("ProductEnroll")}
+            >
+              <Text style={{ color: "black", fontSize: wp("4%") }}>글쓰기</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -110,15 +68,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     flex: 1,
-    width: "50%",
-    height: hp(6),
-    borderRadius: 7,
+    padding: 10,
+    margin: 10,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#BCD593",
   },
   btn_s: {
-    alignItems: "center",
+    alignItems: "flex-end",
     paddingTop: hp("15"),
   },
   btn_s1: {

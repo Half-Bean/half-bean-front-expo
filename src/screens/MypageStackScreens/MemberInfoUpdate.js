@@ -2,12 +2,16 @@ import React from "react";
 import { SafeAreaView, StyleSheet, View, Text, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MemberTextInput from "./MemberTextInput";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const MemberInfoUpdate = () => {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <View style={styles.card}>
+        <View style={styles.topArea}>
           <Text style={styles.buttonContainer}>
             <Ionicons name="person-circle" size={100} color="#696969" />
           </Text>
@@ -19,9 +23,17 @@ const MemberInfoUpdate = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: { //배경 공간
+    flex: 1, //전체의 공간을 차지한다는 의미
+    flexDirection: "column",
+    backgroundColor: "white",
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
+  }, 
+  topArea: { //상단탭..?
     flex: 1,
-    backgroundColor: "#fff",
+    paddingTop: wp(4),
+    paddingBottom: wp(4),
   },
   Title: {
     height: 60,
@@ -53,8 +65,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: 20,
     textAlign: "center",
-    marginTop: 50,
-    marginBottom: 30,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 

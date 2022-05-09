@@ -15,6 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { Colors } from "react-native-paper";
 
 export default (props) => {
   const [title, setTitle] = useState("");
@@ -40,7 +41,7 @@ export default (props) => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView style={styles.back}>
         <View style={styles.container}>
           <View style={styles.topArea}>
             <TextInput
@@ -92,6 +93,9 @@ export default (props) => {
 };
 
 const styles = StyleSheet.create({
+  back: {
+    backgroundColor: Colors.red100,
+  },
   container: {
     //배경 공간
     flex: 1, //전체의 공간을 차지한다는 의미

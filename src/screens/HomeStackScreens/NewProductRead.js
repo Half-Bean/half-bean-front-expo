@@ -6,7 +6,12 @@ import {
   StyleSheet,
   Image,
   View,
+  TouchableOpacity,
 } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { useRoute } from "@react-navigation/native";
 import { Colors } from "react-native-paper";
 
@@ -58,6 +63,14 @@ export default (props) => {
           <View style={[styles.component]}>
             <Image style={[styles.image]} source={{ uri: item.image }} />
           </View>
+          <View style={styles.btn_s}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => props.navigation.push("ProductUpdate")}
+            >
+              <Text style={{ color: "black", fontSize: wp("4%") }}>수정</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -80,5 +93,18 @@ const styles = StyleSheet.create({
   },
   component: {
     flex: 1,
+  },
+  btn: {
+    flex: 1,
+    padding: 10,
+    margin: 10,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#BCD593",
+  },
+  btn_s: {
+    alignItems: "flex-end",
+    paddingTop: hp("15"),
   },
 });

@@ -106,31 +106,25 @@ export default (props) => {
     return (
       <Pressable
         onPress={() =>
-          navigation.navigate("NewProductRead", { post_id: item.post_id })
+          navigation.navigate("ProductRead", { post_id: item.post_id })
         }
       >
         <View style={[styles.view]}>
-          <View style={[styles.viewColumn]}>
-            <Text style={[styles.title]}>{item.title}</Text>
-          </View>
-          <View style={[styles.writeArea]}>
-            <Text style={[styles.write]}>{item.User.nickname}</Text>
-            <Text style={[styles.write2]}>님이 등록한 상품입니다.</Text>
-          </View>
           <View style={[styles.viewRow]}>
-            <View style={[styles.viewColumn2]}>
+            <View style={[styles.viewColumn]}>
               <View>
-                <Text style={[styles.content]} numberOfLines={4}>
+                <Text style={[styles.title]}>{item.title}</Text>
+              </View>
+              <View>
+                <Text style={[styles.content]} numberOfLines={1}>
                   {item.content}
                 </Text>
               </View>
-              <View style={[styles.dateArea]}>
-                <Text style={[styles.date]}>
-                  {item.createdAt.replace("T", " ").split(".")[0]}
-                </Text>
+              <View style={[styles.writeArea]}>
+                <Text style={[styles.write]}>{item.User.nickname}</Text>
               </View>
             </View>
-            <View style={[styles.viewColumn]}>
+            <View style={[styles.viewRow2]}>
               <Image style={[styles.image]} source={{ uri: item.image }} />
             </View>
           </View>
@@ -167,12 +161,15 @@ export default (props) => {
 };
 
 const styles = StyleSheet.create({
+  back: {
+    backgroundColor: Colors.lime50,
+  },
   view: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: Colors.blueGrey50,
-    padding: 10,
-    margin: 10,
+    backgroundColor: "white",
+    padding: 5,
+    margin: 5,
     elevation: 5,
     borderRadius: 10,
   },
@@ -182,12 +179,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   viewRow: {
-    padding: 10,
     flex: 1,
     flexDirection: "row",
-    backgroundColor: Colors.blue100,
     borderRadius: 10,
     marginTop: 5,
+  },
+  viewRow2: {
+    padding: 5,
+    flex: 0.4,
+    flexDirection: "row",
+    borderRadius: 10,
+    marginTop: 5,
+    justifyContent: "space-between",
   },
   viewColumn2: {
     padding: 5,
@@ -196,16 +199,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "bold",
     flexDirection: "column",
   },
   content: {
-    fontSize: 12,
+    fontSize: 11,
   },
   write: {
-    marginRight: 5,
-    fontSize: 12,
+    paddingTop: 5,
+    paddingLeft: 5,
+    fontSize: 10,
     color: Colors.blue500,
     fontWeight: "bold",
   },
@@ -215,21 +219,15 @@ const styles = StyleSheet.create({
     color: Colors.blueGrey500,
   },
   writeArea: {
-    paddingLeft: 5,
     flex: 1,
     flexDirection: "row",
+    paddingTop: 13,
   },
   image: {
     flex: 1,
-    height: 100,
+    width: 10,
+    height: 60,
     alignItems: "flex-end",
-  },
-  date: {
-    fontSize: 11,
-    fontStyle: "italic",
-    color: Colors.pink500,
-  },
-  dateArea: {
-    paddingTop: 10,
+    borderRadius: 5,
   },
 });
