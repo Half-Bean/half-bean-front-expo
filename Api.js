@@ -168,6 +168,9 @@ const Api = {
     // 내가 찜한 상품 조회
     // 내가 거래한 상품 조회
 
+    // 전체 상품 조회
+
+
     // ============Admin=============
     // 회원 정보 조회
     getUsersDataRead: async(userId) => {
