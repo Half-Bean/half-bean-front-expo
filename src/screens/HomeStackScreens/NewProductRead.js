@@ -82,7 +82,7 @@ export default (props) => {
             </Text>
           </View>
           <View style={[styles.component]}>
-            <Image style={[styles.image]} source={{ uri: post.image }} />
+            <Image style={[styles.image]} source={{ uri: item.image }} />
           </View>
           <View style={styles.btn_s}>
             <TouchableOpacity
