@@ -180,6 +180,7 @@ const Api = {
         return await getRequest(`/post/${postId}`);
     },
 
+
     // ============Admin=============
     // 회원 정보 조회
     getUsersDataRead: async(userId) => {

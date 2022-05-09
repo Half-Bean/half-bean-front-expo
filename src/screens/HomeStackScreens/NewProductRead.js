@@ -46,22 +46,31 @@ export default (props) => {
   const [loading, setLoading] = useState(false);
 
   const [post, setPost] = useState([]);
-
+  const [user, setUser] = useState([]);
+  
   const getData = async () => {
     await setLoading(true);
     //   fetch("http://jsonplaceholder.typicode.com/posts")
     //     .then((res) => res.json())
     //     .then((res) => setData(res));
     await setData(props.route.params.post_id);
+    console.log(props.route.params.post_id);
+    console.log("----------------------");
+    await getProductDetailRead(props.route.params.post_id);
   };
-  const getProductDetailRead = async () => {
+
+  const getProductDetailRead = async (data) => {
+    console.log("data  :: ", data);
     let response = await Api.getProductDetailRead(data);
     let postObject = await response.data.response;
+    let userObject = await response.data.response.User;
+    console.log(postObject);
     await setPost(postObject);
+    await setUser(userObject);
   };
+
   useEffect(async () => {
     await getData();
-    await getProductDetailRead(data);
   }, []);
 
   return (
@@ -72,18 +81,28 @@ export default (props) => {
             <Text style={[styles.title]}>{post.title}</Text>
           </View>
           <View>
-            <Text style={[styles.content]} numberOfLines={4}>
+            <Text style={[styles.mid_title]} numberOfLines={4}>
               {post.content}
             </Text>
           </View>
-          <View>
-            <Text style={[styles.date]}>
-              {post.createdAt.replace("T", " ").split(".")[0]}
-            </Text>
-          </View>
+
           <View style={[styles.component]}>
             <Image style={[styles.image]} source={{ uri: item.image }} />
           </View>
+
+          <View>
+            <Text style={[styles.date]}>
+              {post.createdAt}
+            </Text>
+          </View>
+          
+          <View style={[styles.nickborder]}>
+           <Image style={[styles.user_image]} source = {require(".\\static\\public\\image.png")}/>
+           <Text style={[styles.nickname]}>{user.nickname}</Text>
+          </View>
+          
+    
+
           <View style={styles.btn_s}>
             <TouchableOpacity
               style={styles.btn}
@@ -102,7 +121,7 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: Colors.blueGrey50,
+    backgroundColor: Colors.blue100,
     padding: 10,
     margin: 10,
     elevation: 5,
@@ -126,6 +145,61 @@ const styles = StyleSheet.create({
   },
   btn_s: {
     alignItems: "flex-end",
-    paddingTop: hp("15"),
   },
-});
+  title: {
+    height: 60,
+    color: "#000",
+    fontSize: 35,
+    marginTop: 0,
+    marginBottom: 30,
+    fontWeight: "400",
+    textAlign: "center",
+    alignItems:"center",
+    backgroundColor: Colors.blue50,
+    borderRadius: 10,
+  },
+  mid_title: {
+    height: 60,
+    color: "#000",
+    fontSize: 20,
+    marginTop: 0,
+    marginBottom: 15,
+    fontWeight: "300",
+    textAlign: "left",
+    backgroundColor: Colors.blue50,
+    borderRadius: 10,
+    paddingLeft: 10,
+  
+  },
+  date: {
+    textAlign: "right",
+    
+  },
+  user_image: {
+    borderRadius: 100,
+    width: wp(15),
+    height: hp(8),
+    marginTop: 18,
+  },
+  nickname: {
+    height: 60,
+    color: "#000",
+    fontSize: 15,
+    marginTop: 0,
+    marginBottom: 15,
+    fontWeight: "300",
+    textAlign: "left",
+  },
+  nickborder: {
+    backgroundColor: Colors.blue50,
+    // marginTop: 20,
+    // paddingBottom: 80,
+    marginTop: 60,
+    textAlign: "center",
+    alignItems:"center",
+    borderRadius: 20,
+    height: 100,
+    marginTop: 50,
+  }
+  }
+);
