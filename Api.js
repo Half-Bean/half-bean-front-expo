@@ -153,8 +153,10 @@ const Api = {
         return await postJsonRequest('/user/update', user_data);
     },
     // 내 정보 조회
-    getMyDataRead: async() => {
-        return await getRequest('/user/status');
+    getMyDataRead: async(login_id) => {
+        return await postJsonRequest("/user/status", {
+            login_id,
+        });
     },
     // 다른 회원 정보 조회
     getUserDataRead: async(userId) => {
@@ -169,7 +171,14 @@ const Api = {
     // 내가 거래한 상품 조회
 
     // 전체 상품 조회
+    getProductsListRead: async() => {
+        return await getRequest('/post/all')
+    },
 
+    // 상품 상세 조회
+    getProductDetailRead: async(postId) => {
+        return await getRequest(`/post/${postId}`);
+    },
 
     // ============Admin=============
     // 회원 정보 조회

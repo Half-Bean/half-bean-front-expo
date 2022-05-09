@@ -148,7 +148,7 @@ export default (props) => {
     //   fetch("http://jsonplaceholder.typicode.com/posts")
     //     .then((res) => res.json())
     //     .then((res) => setData(res));
-    setData(posts);
+    setData(props.post);
   };
 
   useEffect(() => {

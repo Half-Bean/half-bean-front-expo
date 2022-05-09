@@ -14,11 +14,10 @@ import {
 } from "react-native-responsive-screen";
 import { useRoute } from "@react-navigation/native";
 import { Colors } from "react-native-paper";
+import Api from "../../../Api";
 
 export default (props) => {
   const route = useRoute();
-  useEffect(() => {}, []);
-
   const item = {
     post_id: 1,
     title: "쿠로미 인형 팝니다",
@@ -42,26 +41,48 @@ export default (props) => {
     },
   };
 
+  const [data, setData] = useState();
+  const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const [post, setPost] = useState([]);
+
+  const getData = async () => {
+    await setLoading(true);
+    //   fetch("http://jsonplaceholder.typicode.com/posts")
+    //     .then((res) => res.json())
+    //     .then((res) => setData(res));
+    await setData(props.route.params.post_id);
+  };
+  const getProductDetailRead = async () => {
+    let response = await Api.getProductDetailRead(data);
+    let postObject = await response.data.response;
+    await setPost(postObject);
+  };
+  useEffect(async () => {
+    await getData();
+    await getProductDetailRead(data);
+  }, []);
+
   return (
     <SafeAreaView>
       <ScrollView>
-        <Text>{props.route.params.post_id}</Text>
         <View style={[styles.view]}>
           <View>
-            <Text style={[styles.title]}>{item.title}</Text>
+            <Text style={[styles.title]}>{post.title}</Text>
           </View>
           <View>
             <Text style={[styles.content]} numberOfLines={4}>
-              {item.content}
+              {post.content}
             </Text>
           </View>
           <View>
             <Text style={[styles.date]}>
-              {item.createdAt.replace("T", " ").split(".")[0]}
+              {post.createdAt.replace("T", " ").split(".")[0]}
             </Text>
           </View>
           <View style={[styles.component]}>
-            <Image style={[styles.image]} source={{ uri: item.image }} />
+            <Image style={[styles.image]} source={{ uri: post.image }} />
           </View>
           <View style={styles.btn_s}>
             <TouchableOpacity

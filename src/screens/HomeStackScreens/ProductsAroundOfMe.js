@@ -4,15 +4,26 @@ import Peed from "./Peed.js";
 import { Colors } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Api from "../../../Api";
 
 export default (props) => {
   const [groundValue, setGroundValue] = useState("전체");
+  const [posts, setPosts] = useState();
   const onChangeGround = (value) => {
     console.warn(value);
     setGroundValue(value);
   };
 
-  useEffect(() => {}, []);
+  useEffect(async () => {
+    await getProductsListRead();
+  }, []);
+
+  const getProductsListRead = async () => {
+    let response = await Api.getProductsListRead();
+    const post = await response.data.response.posts;
+    setPosts(post);
+    console.log(response);
+  };
   return (
     <SafeAreaView style={[styles.bg]}>
       <ScrollView>
@@ -46,7 +57,7 @@ export default (props) => {
             </View>
           </View>
         </View>
-        <Peed />
+        <Peed post={posts} />
       </ScrollView>
     </SafeAreaView>
   );
