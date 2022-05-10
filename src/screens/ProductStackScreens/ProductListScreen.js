@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,18 +8,30 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import ProductsList from "./ProductsList.js";
+import Api from "../../../Api";
 
 export default (props) => {
+  const [posts, setPosts] = useState();
+
+  useEffect(async () => {
+    await getProductsListRead();
+  }, []);
+
+  const getProductsListRead = async () => {
+    let response = await Api.getProductsListRead();
+    const post = await response.data.response.posts;
+    setPosts(post);
+    console.log(response);
+  };
   return (
     <SafeAreaView>
       <ScrollView>
-        <ProductsList />
+        <ProductsList post={posts} />
         <View style={styles.container}>
           <View style={styles.btn_s}>
             <TouchableOpacity

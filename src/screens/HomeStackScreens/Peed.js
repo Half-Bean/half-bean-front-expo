@@ -131,7 +131,10 @@ export default (props) => {
               </View>
             </View>
             <View style={[styles.viewColumn]}>
-              <Image style={[styles.image]} source={{ uri: item.image }} />
+              <Image
+                style={[styles.image]}
+                source={require(".\\src\\image\\nop_image.png")}
+              />
             </View>
           </View>
         </View>
@@ -222,6 +225,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     height: 100,
+    width: 120,
     alignItems: "flex-end",
   },
   date: {

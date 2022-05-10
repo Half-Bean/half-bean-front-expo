@@ -180,6 +180,11 @@ const Api = {
         return await getRequest(`/post/${postId}`);
     },
 
+    // 상품 등록
+    postProductEnroll: async(postObject) => {
+        return await postJsonRequest('/post', postObject);
+    },
+
     // ============Admin=============
     // 회원 정보 조회
     getUsersDataRead: async(userId) => {

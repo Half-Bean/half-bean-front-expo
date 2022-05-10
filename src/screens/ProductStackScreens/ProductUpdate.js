@@ -17,22 +17,63 @@ import {
 } from "react-native-responsive-screen";
 import { Colors } from "react-native-paper";
 
+import Api from "../../../Api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default (props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [userId, setUserId] = useState();
+
+  const getUserId = async () => {
+    const id = await AsyncStorage.getItem("user_id", (err, result) => {
+      console.log(result); // User1 출력
+    });
+    await setUserId(id);
+    console.log(id);
+  };
+
+  useEffect(async () => {
+    await getUserId();
+  }, []);
+
+  const postEnroll = async () => {
+    const postObject = {
+      user_id: 2,
+      title: title,
+      content: content,
+      category: "초소량거래",
+      isSoldout: "거래중",
+      image: null,
+      visual_open: true,
+      isHurry: false,
+      hit: 0,
+      blame_count: 0,
+      area_id: 1,
+    };
+    console.log(postObject);
+    console.log("=============");
+    const response = await Api.postProductEnroll(postObject);
+    console.log(response);
+    if (response.success === true) {
+      alert("상품 수정 성공!");
+    } else {
+      alert("올바른 값을 입력하세요");
+    }
+  };
 
   const goAlert = () =>
     Alert.alert(
-      "게시글",
-      "게시글을 수정하시겠습니까?",
+      "상품",
+      "상품을 수정하시겠습니까?",
       [
         {
           text: "네",
-          onPress: () => console.log("게시물 수정에 성공하셨습니다."),
+          onPress: () => postEnroll(),
         },
         {
           text: "아니요",
-          onPress: () => console.log("게시글 수정을 취소하였습니다."),
+          onPress: () => console.log("상품 수정을 취소하였습니다."),
           style: "cancel",
         },
       ],
@@ -81,7 +122,7 @@ export default (props) => {
             <TouchableOpacity
               style={styles.btn}
               // onPress={() =>props.navigation.push("ProductListScreen")}
-              onPress={goAlert}
+              onPress={() => postEnroll()}
             >
               <Text style={{ color: "black", fontSize: 12 }}>완료</Text>
             </TouchableOpacity>
@@ -94,7 +135,7 @@ export default (props) => {
 
 const styles = StyleSheet.create({
   back: {
-    backgroundColor: Colors.red100,
+    backgroundColor: Colors.lime100,
   },
   container: {
     //배경 공간
@@ -108,6 +149,7 @@ const styles = StyleSheet.create({
     //상단탭..?
     flex: 1,
     padding: 10,
+    backgroundColor: "white",
   },
   textArea: {
     //글배경..?

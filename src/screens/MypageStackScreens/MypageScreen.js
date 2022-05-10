@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,14 +7,44 @@ import {
   View,
   Button,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Api from "../../../Api";
 
 export default (props) => {
+  const route = useRoute();
+
+  const [user, setUser] = useState("");
+  const [userId, setUserId] = useState();
+
+  const getUserId = async () => {
+    const id = await AsyncStorage.getItem("user_id", (err, result) => {
+      console.log(result); // User1 출력
+      getMyDataRead(props.login_id);
+    });
+    setUserId(id);
+    console.log(id);
+  };
+
+  const getMyDataRead = async (data) => {
+    console.log("data  :: ", data);
+    let response = await Api.getMyDataRead(data);
+    let userObject = await response.data.response.User;
+    console.log(postObject);
+    setUser(userObject);
+  };
+
+  useEffect(async () => {
+    await getUserId();
+  }, []);
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -22,14 +52,26 @@ export default (props) => {
           <View style={styles.topArea}>
             <View>
               <View style={styles.buttonContainer}>
-                <Icon name="user-circle-o" size={80} color="#696969" />
+                <View>
+                  <Image
+                    style={[styles.user_image]}
+                    source={require(".\\src\\image\\profile.png")}
+                  />
+                </View>
               </View>
+
+              {/* <View>
+                <Text>{user.userId}</Text>
+                </View> */}
 
               <View style={styles.TextArea}>
                 <Text style={styles.Text}>
-                  닉네임 : 막걸리에 파전{"\n"}
-                  ID : abc {"\n"}
-                  Email : abc@kumoh.ac.kr {"\n"}
+                  닉네임 : nickname{"\n"}
+                  {"\n"}
+                  ID : aaa2 {"\n"}
+                  {"\n"}
+                  Email : aaa2@kumoh.ac.kr {"\n"}
+                  {"\n"}
                   등급 : 강낭콩
                 </Text>
               </View>
@@ -93,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 0.3,
     justifyContent: "center",
     backgroundColor: "white",
-    paddingTop: wp(4),
+    paddingTop: wp(3),
     paddingBottom: wp(4),
     alignItems: "center", //추가 - 여기서 가운데정렬됨
   },
@@ -129,5 +171,11 @@ const styles = StyleSheet.create({
     paddingTop: wp(4),
     paddingBottom: wp(5),
     alignItems: "center", //추가 - 여기서 가운데정렬됨
+  },
+  user_image: {
+    borderRadius: 100,
+    width: wp(30),
+    height: hp(18),
+    marginTop: 18,
   },
 });

@@ -101,6 +101,15 @@ export default (props) => {
   ];
 
   const navigation = useNavigation();
+  const nullCheck = (image) => {
+    if (image === null) {
+      console.log(null);
+      return require(".\\src\\image\\nop_image.png");
+    } else {
+      console.log(image);
+      return image;
+    }
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -125,7 +134,10 @@ export default (props) => {
               </View>
             </View>
             <View style={[styles.viewRow2]}>
-              <Image style={[styles.image]} source={{ uri: item.image }} />
+              <Image
+                style={[styles.image]}
+                source={require(".\\src\\image\\nop_image.png")}
+              />
             </View>
           </View>
         </View>
@@ -142,7 +154,7 @@ export default (props) => {
     //   fetch("http://jsonplaceholder.typicode.com/posts")
     //     .then((res) => res.json())
     //     .then((res) => setData(res));
-    setData(posts);
+    setData(props.post);
   };
 
   useEffect(() => {
