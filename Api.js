@@ -4,7 +4,14 @@ const api = "https://halfbean01.herokuapp.com/api";
 
 const getRequest = async(path, params = {}) => {
     try {
-        const token = await AsyncStorage.getItem("token");
+        const token = await AsyncStorage.getItem("user", (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                let UserInfo = JSON.parse(result);
+                return UserInfo.token;
+            }
+        });
         const response = await axios.get(api + path, {
             headers: {
                 authorization: `Bearer ${token}`,
@@ -21,7 +28,14 @@ const getRequest = async(path, params = {}) => {
 
 const postFormRequest = async(path, body) => {
     try {
-        const token = await AsyncStorage.getItem("token");
+        const token = await AsyncStorage.getItem("user", (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                let UserInfo = JSON.parse(result);
+                return UserInfo.token;
+            }
+        });
         const { data } = await axios.post(api + path, body, {
             headers: {
                 authorization: `Bearer ${token}`,
@@ -37,8 +51,17 @@ const postFormRequest = async(path, body) => {
 
 const postJsonRequest = async(path, body) => {
     try {
-        const token = await AsyncStorage.getItem("token");
-        if (token) {
+        const user = await AsyncStorage.getItem("user")
+
+        if (user) {
+            const token = await AsyncStorage.getItem("user", (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    let UserInfo = JSON.parse(result);
+                    return UserInfo.token;
+                }
+            });
             const { data } = await axios.post(api + path, body, {
                 headers: {
                     authorization: `Bearer ${token}`,
@@ -61,8 +84,17 @@ const postJsonRequest = async(path, body) => {
 
 const putJsonRequest = async(path, body) => {
     try {
-        const token = await AsyncStorage.getItem("token");
-        if (token) {
+        const user = await AsyncStorage.getItem("user")
+
+        if (user) {
+            const token = await AsyncStorage.getItem("user", (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    let UserInfo = JSON.parse(result);
+                    return UserInfo.token;
+                }
+            });
             const { data } = await axios.put(api + path, body, {
                 headers: {
                     authorization: `Bearer ${token}`,
@@ -85,8 +117,17 @@ const putJsonRequest = async(path, body) => {
 
 const deleteJsonRequest = async(path) => {
     try {
-        const token = await AsyncStorage.getItem("token");
-        if (token) {
+        const user = await AsyncStorage.getItem("user")
+
+        if (user) {
+            const token = await AsyncStorage.getItem("user", (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    let UserInfo = JSON.parse(result);
+                    return UserInfo.token;
+                }
+            });
             const { data } = await axios.delete(api + path, {
                 headers: {
                     authorization: `Bearer ${token}`,
@@ -121,16 +162,20 @@ const Api = {
         return await postJsonRequest("/auth/logout");
     },
     // 아이디 중복확인
-    getDoubleCheckId: async(login_Id) => {
-        return await getRequest('/auth/doubleCheckId', { login_Id });
+    getDoubleCheckId: async(login_id) => {
+        return await postJsonRequest('/auth/doublecheck/id', { login_id });
+    },
+    // 닉네임 중복확인
+    getDoubleCheckNickName: async(nickname) => {
+        return await postJsonRequest('/auth/doublecheck/nickname', { nickname });
     },
     // 이메일 인증번호 전송(비밀번호 재설정, 회원가입 시)
-    getAuthEmail: async(email) => {
-        return await getRequest('/auth/email', { email });
+    postAuthEmail: async(email) => {
+        return await postJsonRequest('/auth/email', { email });
     },
     // 이메일 인증번호 확인(비밀번호 재설정, 회원가입 시) 
     postAuthEmailCheck: async(email, verify_code) => {
-        return await postJsonRequest("/auth/email", {
+        return await postJsonRequest("/auth/email/verify", {
             email,
             verify_code
         });
@@ -166,6 +211,8 @@ const Api = {
     deleteUser: async() => {
         return await getRequest('/user');
     },
+
+    // ============Post=============
     // 내가 등록한 상품 조회
     // 내가 찜한 상품 조회
     // 내가 거래한 상품 조회
@@ -174,15 +221,26 @@ const Api = {
     getProductsListRead: async() => {
         return await getRequest('/post/all')
     },
-
+    // 지역별 전체 상품 조회
+    getProductsOfAreaListRead: async(area) => {
+        return await getRequest('/post', { area });
+    },
     // 상품 상세 조회
     getProductDetailRead: async(postId) => {
         return await getRequest(`/post/${postId}`);
     },
-
     // 상품 등록
     postProductEnroll: async(postObject) => {
         return await postJsonRequest('/post', postObject);
+    },
+    // 조회수 증가
+    putPostHit: async(post_id) => {
+        return await putJsonRequest('/post/hit', { post_id });
+    },
+
+    // ============Blame=============
+    postBlame: async(blameObject) => {
+        return await postJsonRequest('/blame', blameObject);
     },
 
     // ============Admin=============

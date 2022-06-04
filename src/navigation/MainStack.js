@@ -11,6 +11,7 @@ import MypageScreen from "../screens/MypageStackScreens/MypageScreen";
 import MemberInfoUpdate from "../screens/MypageStackScreens/MemberInfoUpdate";
 // ChatStackScreens
 import ChatListScreen from "../screens/ChatStackScreens/ChatListScreen";
+import ChatScreen from "../screens/ChatStackScreens/ChatScreen";
 // NoticeStackScreens
 import NoticeListScreen from "../screens/NoticeStackScreens/NoticeListScreen";
 // ProductStackScreens
@@ -49,17 +50,29 @@ const ProductStackScreen = () => {
       <ProductStack.Screen
         name="ProductRead"
         component={ProductRead}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
       <ProductStack.Screen
         name="ProductEnroll"
         component={ProductEnroll}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
       <ProductStack.Screen
         name="ProductUpdate"
         component={ProductUpdate}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
     </Stack.Navigator>
   );
@@ -76,7 +89,11 @@ const MypageStackScreen = () => {
       <MypageStack.Screen
         name="MypageUpdate"
         component={MemberInfoUpdate}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
     </Stack.Navigator>
   );
@@ -98,7 +115,29 @@ const HomeStackScreen = () => {
       <HomeStack.Screen
         name="NewProductRead"
         component={NewProductRead}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <HomeStack.Screen
+        name="ProductEnroll"
+        component={ProductEnroll}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <HomeStack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
     </Stack.Navigator>
   );
@@ -124,6 +163,11 @@ const ChatStackScreen = () => {
         component={ChatListScreen}
         options={{ headerShown: false }}
       />
+      <ChatStack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -133,6 +177,9 @@ const MainTabScreen = ({ navigation, route }) => {
     <Tab.Navigator
       initialRouteName="HomeStack"
       screenOptions={({ route }) => ({
+        activeTintColor: "black",
+        inactiveTintColor: "lightgray",
+        tabBarShowLabel: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -153,61 +200,40 @@ const MainTabScreen = ({ navigation, route }) => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
-      tabBarOptions={{
-        activeTintColor: "black",
-        inactiveTintColor: "lightgray",
-        showLabel: false,
-      }}
     >
       <Tab.Screen
         name="ProductStack"
         component={ProductStackScreen}
         options={{
-          gestureEnabled: false,
-          title: "거래마켓",
-          //headerBackTitleVisible: false,
-          //headerTitleAlign: "center",
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="MypageStack"
         component={MypageStackScreen}
         options={{
-          gestureEnabled: false,
-          title: "마이페이지",
-          //headerBackTitleVisible: false,
-          //headerTitleAlign: "center",
-          headerBackImage: BackBtn,
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="HomeStack"
         component={HomeStackScreen}
         options={{
-          gestureEnabled: false,
-          title: "내 주변",
-          //headerBackTitleVisible: false,
-          //headerTitleAlign: "center",
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="NoticeStack"
         component={NoticeStackScreen}
         options={{
-          gestureEnabled: false,
-          title: "내 알람",
-          //headerBackTitleVisible: false,
-          //headerTitleAlign: "center",
+          headerShown: false,
         }}
       />
       <Tab.Screen
         name="ChatStack"
         component={ChatStackScreen}
         options={{
-          gestureEnabled: false,
-          title: "채팅",
-          //headerBackTitleVisible: false,
-          //headerTitleAlign: "center",
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

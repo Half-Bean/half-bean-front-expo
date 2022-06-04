@@ -105,14 +105,14 @@ export default (props) => {
           <View style={[styles.component]}>
             <Image
               style={[styles.image]}
-              source={require(".\\src\\image\\nop_image.png")}
+              source={"./src/image/nop_image.png"}
             />
           </View>
           <View style={[styles.nickborder]}>
             <View style={[styles.profile]}>
               <Image
                 style={[styles.user_image]}
-                source={require(".\\src\\image\\profile.png")}
+                source={"./src/image/profile.png"}
               />
             </View>
             <View style={[styles.nickText]}>

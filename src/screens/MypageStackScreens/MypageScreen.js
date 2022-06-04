@@ -55,7 +55,7 @@ export default (props) => {
                 <View>
                   <Image
                     style={[styles.user_image]}
-                    source={require(".\\src\\image\\profile.png")}
+                    source={"./src/image/profile.png"}
                   />
                 </View>
               </View>

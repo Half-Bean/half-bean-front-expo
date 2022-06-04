@@ -12,12 +12,13 @@ export default (props) => {
   const [animating, setAnimating] = useState(true);
 
   const isLogin = async () => {
-    const userId = await AsyncStorage.getItem("user_id");
-    console.log(userId === null);
-    if (userId) {
+    const user = await AsyncStorage.getItem("user");
+    console.log(user === null);
+    if (user) {
       props.navigation.navigate("MainTab", { loading: false });
     } else {
       props.navigation.navigate("Auth", { loading: false });
+      //props.navigation.navigate("MainTab", { loading: false });
     }
   };
 
@@ -25,7 +26,7 @@ export default (props) => {
     setTimeout(() => {
       setAnimating(false);
       isLogin();
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (

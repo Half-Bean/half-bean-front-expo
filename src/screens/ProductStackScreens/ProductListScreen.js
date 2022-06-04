@@ -26,7 +26,6 @@ export default (props) => {
     let response = await Api.getProductsListRead();
     const post = await response.data.response.posts;
     setPosts(post);
-    console.log(response);
   };
   return (
     <SafeAreaView>

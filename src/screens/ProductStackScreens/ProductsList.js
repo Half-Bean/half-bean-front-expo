@@ -103,10 +103,8 @@ export default (props) => {
   const navigation = useNavigation();
   const nullCheck = (image) => {
     if (image === null) {
-      console.log(null);
-      return require(".\\src\\image\\nop_image.png");
+      return "./src/image/nop_image.png";
     } else {
-      console.log(image);
       return image;
     }
   };
@@ -136,7 +134,7 @@ export default (props) => {
             <View style={[styles.viewRow2]}>
               <Image
                 style={[styles.image]}
-                source={require(".\\src\\image\\nop_image.png")}
+                source={"./src/image/nop_image.png"}
               />
             </View>
           </View>
@@ -166,7 +164,7 @@ export default (props) => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => String(item.id)}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );

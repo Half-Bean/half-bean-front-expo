@@ -25,44 +25,79 @@ export default (props) => {
   const [userPassword, setUserPassword] = useState("");
   const [errortext, setErrortext] = useState("");
 
-  const passwordInputRef = createRef();
+  const [user_id, setUser_id] = useState("");
+  const [login_id, setLogin_id] = useState("");
+  const [token, setToken] = useState("");
 
-  async function setUseridStorage(userId) {
-    await AsyncStorage.setItem("user_id", userId);
-    console.log("Done.");
-  }
+  const passwordInputRef = createRef();
 
   const handleSubmitPress = async (props) => {
     setErrortext("");
+    // 예외 처리
     if (!userId) {
-      alert("아이디를 입력해주세요");
+      setErrortext("아이디를 입력해주세요");
       return;
+    } else {
+      if (userId.length < 5) {
+        setErrortext("아이디를 5자 이상 입력해주세요");
+        return;
+      }
     }
     if (!userPassword) {
-      alert("비밀번호를 입력해주세요");
+      setErrortext("비밀번호를 입력해주세요");
       return;
+    } else {
+      if (userPassword.length < 8) {
+        setErrortext("비밀번호는 8자 이상 입니다.");
+        return;
+      }
     }
     setLoading(true);
 
     const response = await Api.postLogin(userId, userPassword);
     console.log(response);
-    //response.token
-    if (response.success === true) {
-      alert("로그인 성공");
-      //await AsyncStorage.setItem("token", response.token);
-      await AsyncStorage.setItem("user_id", userId);
-      AsyncStorage.getItem("login_id")
-        .then((value) => {
-          console.log("로그인 >> ", value);
-        })
-        .done();
+    if (!response) {
+      //setErrortext("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+      alert("아이디와 비밀번호를 다시 한 번 확인해주세요.");
       setLoading(false);
-      props.navigation.navigate("MainTab");
       return;
     } else {
-      alert("로그인 실패");
-      setLoading(false);
-      return;
+      if (response.success === true) {
+        alert(response.response.nickname + "님 반가워요 :)");
+        //await AsyncStorage.setItem("token", response.token);
+        let user = {
+          user_id: response.response.user_id,
+          login_id: response.response.login_id,
+          token: response.token,
+        };
+        await AsyncStorage.setItem("user", JSON.stringify(user), (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+        await AsyncStorage.getItem("user", (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            let UserInfo = JSON.parse(result);
+            setUser_id(UserInfo.user_id);
+            setLogin_id(UserInfo.login_id);
+            setToken(UserInfo.token);
+            console.log("user_id : " + UserInfo.user_id);
+            console.log("login_id : " + UserInfo.login_id);
+            console.log("token : " + UserInfo.token);
+          }
+        });
+
+        setLoading(false);
+        props.navigation.navigate("MainTab");
+        return;
+      } else {
+        console.log("로그인 실패");
+        alert("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+        setLoading(false);
+        return;
+      }
     }
   };
 
@@ -123,7 +158,7 @@ export default (props) => {
             style={styles.TextRegister}
             onPress={() => props.navigation.navigate("Signup")}
           >
-            앱 사용이 처음이시라면, 회원가입이 필요해요 :)
+            앱 사용이 처음이시라면, 회원가입이 필요해요 :D
           </Text>
         </View>
         <View style={{ flex: 3 }} />
@@ -154,11 +189,11 @@ const styles = StyleSheet.create({
     flex: 0.3,
     justifyContent: "center",
     backgroundColor: "white",
-    paddingTop: wp(3),
+    paddingTop: 3,
   },
   TitleText: {
-    fontSize: wp(8),
-    paddingBottom: wp("1%"),
+    fontSize: 25,
+    paddingBottom: 5,
   },
   Text: {
     fontSize: wp("4"),
@@ -178,6 +213,7 @@ const styles = StyleSheet.create({
   formArea: {
     justifyContent: "center",
     flex: 1.5,
+    paddingTop: 10,
   },
   textFormTop: {
     borderWidth: 2,
