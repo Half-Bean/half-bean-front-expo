@@ -17,6 +17,25 @@ import {
 export default (props) => {
   const navigation = useNavigation();
 
+  const isHurryTag = () => {
+    return <Text style={[styles.type]}>긴급</Text>;
+  };
+
+  const categoryTag = (tag) => {
+    if (tag === "초소량 거래") {
+      return <Text style={[styles.type1]}>{tag}</Text>;
+    }
+    if (tag === "대여") {
+      return <Text style={[styles.type2]}>{tag}</Text>;
+    }
+    if (tag === "배달비 쉐어") {
+      return <Text style={[styles.type3]}>{tag}</Text>;
+    }
+    if (tag === "슈퍼맨") {
+      return <Text style={[styles.type4]}>{tag}</Text>;
+    }
+  };
+
   const imageBox = (image) => {
     let i =
       "data:image/png;base64," +
@@ -59,16 +78,18 @@ export default (props) => {
         }
       >
         <View style={[styles.view]}>
-          <View style={[styles.viewColumn]}>
+          <View style={[styles.viewRow2]}>
+            {item.isHurry === true ? isHurryTag() : null}
+            {categoryTag(item.category)}
             <Text style={[styles.title]} numberOfLines={1}>
               {item.title}
             </Text>
           </View>
           <View style={[styles.writeArea]}>
             <Text style={[styles.write]}>{item.User.nickname}</Text>
-            <Text style={[styles.write2]}>님이 </Text>
+            <Text style={[styles.write2]}>님이</Text>
             <Text style={[styles.date]}> {displayedAt(item.createdAt)} </Text>
-            <Text style={[styles.write2]}> 등록한 상품입니다.</Text>
+            <Text style={[styles.write2]}>등록한 상품입니다.</Text>
           </View>
           <View style={[styles.viewRow]}>
             <View style={[styles.viewColumn2]}>
@@ -136,7 +157,11 @@ const styles = StyleSheet.create({
     //padding: 5,
     flex: 1,
     flexDirection: "column",
-    backgroundColor: Colors.pink100,
+  },
+  viewRow2: {
+    //padding: 5,
+    flex: 1,
+    flexDirection: "row",
   },
   viewRow: {
     padding: 10,
@@ -157,6 +182,56 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     flexDirection: "column",
   },
+  type: {
+    fontSize: 15,
+    backgroundColor: Colors.red300,
+    borderRadius: 5,
+    fontWeight: "bold",
+    padding: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
+    marginRight: 5,
+  },
+  type1: {
+    fontSize: 15,
+    backgroundColor: Colors.green200,
+    borderRadius: 5,
+    fontWeight: "bold",
+    padding: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
+    marginRight: 5,
+  },
+  type2: {
+    fontSize: 15,
+    backgroundColor: Colors.amber200,
+    borderRadius: 5,
+    fontWeight: "bold",
+    padding: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
+    marginRight: 5,
+  },
+  type3: {
+    fontSize: 15,
+    backgroundColor: Colors.purple200,
+    borderRadius: 5,
+    fontWeight: "bold",
+    padding: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
+    marginRight: 5,
+  },
+  type4: {
+    fontSize: 15,
+    backgroundColor: Colors.blue400,
+    borderRadius: 5,
+    fontWeight: "bold",
+    padding: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
+    marginRight: 5,
+  },
   content: {
     fontSize: 15,
   },
@@ -172,7 +247,7 @@ const styles = StyleSheet.create({
     color: Colors.blueGrey500,
   },
   writeArea: {
-    paddingLeft: 5,
+    paddingLeft: 1,
     flex: 1,
     flexDirection: "row",
   },
@@ -185,7 +260,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 14,
-    color: Colors.pink500,
+    color: Colors.amber700,
     marginTop: 1,
     fontWeight: "bold",
   },
@@ -200,7 +275,7 @@ const styles = StyleSheet.create({
     paddingTop: "50%",
   },
   emptyText: {
-    fontSize: 20,
+    fontSize: 15,
     fontStyle: "italic",
     color: Colors.grey700,
     fontWeight: "bold",

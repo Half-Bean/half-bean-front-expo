@@ -225,6 +225,10 @@ const Api = {
     getProductsOfAreaListRead: async(area) => {
         return await getRequest('/post', { area });
     },
+    // 카테고리별 전체 상품 조회
+    getProductsOfCategoryListRead: async(category) => {
+        return await getRequest('/post', { category });
+    },
     // 상품 상세 조회
     getProductDetailRead: async(postId) => {
         return await getRequest(`/post/${postId}`);

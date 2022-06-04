@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AppLoading from "expo-app-loading";
 import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 import Peed from "./Peed.js";
 import { Colors, FAB } from "react-native-paper";

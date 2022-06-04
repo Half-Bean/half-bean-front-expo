@@ -1,114 +1,125 @@
 import React, { useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  Button,
-  TouchableOpacity,
-} from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
 import ProductsList from "./ProductsList.js";
+import { Colors, FAB } from "react-native-paper";
+import RNPickerSelect from "react-native-picker-select";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Api from "../../../Api";
 
 export default (props) => {
+  const [groundValue, setGroundValue] = useState("초소량 거래");
   const [posts, setPosts] = useState();
+  const [areaId, setAreaId] = useState(1);
 
   useEffect(async () => {
     await getProductsListRead();
   }, []);
 
+  const NewProduct = () => (
+    <FAB
+      style={styles.fab}
+      icon="plus"
+      onPress={() => props.navigation.push("ProductEnroll")}
+      //onPress={() => console.log("Pressed")}
+    />
+  );
+
+  // Peed Load
   const getProductsListRead = async () => {
-    let response = await Api.getProductsListRead();
+    let response = await Api.getProductsOfCategoryListRead(groundValue);
     const post = await response.data.response.posts;
+    //console.log(post);
     setPosts(post);
   };
+
+  // 위치가 바뀌면
+  const onChangeGround = async (value) => {
+    setGroundValue(value);
+    let response = await Api.getProductsOfCategoryListRead(value);
+    const post = await response.data.response.posts;
+    //console.log(post);
+    setPosts(post);
+  };
+
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <ProductsList post={posts} />
-        <View style={styles.container}>
-          <View style={styles.btn_s}>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => props.navigation.push("ProductEnroll")}
+    <SafeAreaView style={[styles.bg]}>
+      <View style={{ height: "11%" }}>
+        <View style={[styles.viewRow]}>
+          <View style={[styles.groundArea]}>
+            <RNPickerSelect
+              textInputProps={{ underlineColorAndroid: "transparent" }}
+              useNativeAndroidPickerStyle={false}
+              fixAndroidTouchableBug={true}
+              items={[
+                { label: "초소량 거래", value: "초소량 거래" },
+                { label: "대여", value: "대여" },
+                { label: "배달비 쉐어", value: "배달비 쉐어" },
+                { label: "슈퍼맨", value: "슈퍼맨" },
+              ]}
+              value={groundValue}
+              onValueChange={(value) => onChangeGround(value)}
             >
-              <Text style={{ color: "black", fontSize: wp("4%") }}>글쓰기</Text>
-            </TouchableOpacity>
+              <Text style={[styles.ground]}>{groundValue}</Text>
+            </RNPickerSelect>
+          </View>
+          <View style={[styles.viewRow]}>
+            <View style={[styles.iconArea]}>
+              <View style={[styles.icon]}>
+                <MaterialCommunityIcons
+                  name="cursor-default-click-outline"
+                  size={20}
+                  color="black"
+                />
+              </View>
+            </View>
           </View>
         </View>
-      </ScrollView>
+      </View>
+      <View style={{ flexGrow: 1 }}>
+        <ProductsList post={posts} />
+      </View>
+      {NewProduct()}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    //배경 공간
-    flex: 1, //전체의 공간을 차지한다는 의미
-    flexDirection: "column",
-    backgroundColor: "white",
-    paddingLeft: wp(7),
-    paddingRight: wp(7),
-  },
-  topArea: {
-    //상단탭..?
+  fab: {
     flex: 1,
-    paddingTop: wp(4),
-    paddingBottom: wp(4),
+    position: "absolute",
+    margin: 16,
+    right: 10,
+    bottom: 50,
   },
-  TextArea: {
-    //글배경..?
-    flex: 0.3,
-    justifyContent: "center",
-    backgroundColor: "white",
-    paddingTop: wp(4),
-    paddingBottom: wp(4),
-    alignItems: "center", //추가 - 여기서 가운데정렬됨
+  bg: {
+    flexGrow: 1,
+    backgroundColor: Colors.lime50,
   },
-  TitleText: {
-    fontSize: wp(8),
-    paddingBottom: wp("1%"),
-  },
-  Text: {
-    fontSize: wp("4"),
-  },
-  btn: {
-    flex: 1,
-    padding: 10,
-    margin: 10,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#BCD593",
-  },
-  btn_s: {
-    alignItems: "flex-end",
-    paddingTop: hp("15"),
-  },
-  btn_s1: {
-    alignItems: "center",
-    paddingTop: hp("5"),
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    margin: "auto",
-  },
-  Ic: {
-    paddingRight: 10,
+  groundArea: { paddingTop: -5, margin: 1, marginTop: -5 },
+  ground: {
+    backgroundColor: Colors.white,
+    fontSize: 20,
+    width: "80%",
+    height: "55%",
+    fontWeight: "bold",
+    color: Colors.blueGrey700,
+    borderRadius: 12,
+    margin: 20,
+    padding: 20,
     paddingTop: 10,
-  },
-  TextArea_s: {
-    flex: 0.3,
+    paddingBottom: -10,
+    paddingRight: 10,
+    elevation: 10,
     justifyContent: "center",
-    backgroundColor: "white",
-    paddingTop: wp(3),
-    paddingBottom: wp(3),
-    alignItems: "center", //추가 - 여기서 가운데정렬됨
   },
+  viewRow: {
+    padding: -5,
+    flex: 1,
+    flexDirection: "row",
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  iconArea: { paddingTop: 30, margin: 10, marginLeft: 10 },
 });
