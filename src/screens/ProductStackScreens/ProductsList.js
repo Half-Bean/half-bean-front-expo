@@ -9,12 +9,27 @@ import {
 } from "react-native";
 import { Colors } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import Api from "../../../Api";
 
 export default (props) => {
   const navigation = useNavigation();
 
   const isHurryTag = () => {
     return <Text style={[styles.hurrytag]}> 긴급 </Text>;
+  };
+
+  const imageBox = (image) => {
+    let images = "data:image/png;base64," + image;
+    return (
+      <View style={[styles.viewRow2]}>
+        <Image
+          style={[styles.image]}
+          source={{
+            uri: images,
+          }}
+        />
+      </View>
+    );
   };
 
   const renderItem = ({ item }) => {
@@ -38,12 +53,7 @@ export default (props) => {
                 </Text>
               </View>
             </View>
-            <View style={[styles.viewRow2]}>
-              <Image
-                style={[styles.image]}
-                source={require(".\\src\\image\\nop_image.png")}
-              />
-            </View>
+            {item.image ? imageBox(item.image) : null}
           </View>
         </View>
       </Pressable>
@@ -52,7 +62,21 @@ export default (props) => {
 
   const [data, setData] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await getProductsListRead();
+    setIsRefreshing(false);
+  };
+
+  const getProductsListRead = async () => {
+    let response = await Api.getProductsOfCategoryListRead(props.category);
+    const post = await response.data.response.posts;
+    //console.log(post);
+    setData(post);
+  };
 
   const getData = () => {
     setLoading(true);
@@ -68,6 +92,8 @@ export default (props) => {
       <FlatList
         data={data}
         renderItem={renderItem}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={() => (
           <View style={[styles.empty]}>
@@ -92,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     margin: 15,
-    marginBottom: -4,
+    marginBottom: 1,
     elevation: 5,
     borderRadius: 10,
   },

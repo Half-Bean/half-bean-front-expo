@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AppLoading from "expo-app-loading";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,26 +25,76 @@ export default (props) => {
   const [user, setUser] = useState("");
   const [userId, setUserId] = useState();
 
-  const getUserId = async () => {
-    const id = await AsyncStorage.getItem("user_id", (err, result) => {
-      console.log(result); // User1 출력
-      getMyDataRead(props.login_id);
-    });
-    setUserId(id);
-    console.log(id);
+  const pressLogout = async () => {
+    const response = await Api.postLogout(userId);
+    if (response) {
+      await AsyncStorage.removeItem("user");
+      const test = await AsyncStorage.getItem("user");
+      console.log(test);
+      alert("로그아웃이 완료되었습니다.");
+      props.navigation.push("Auth");
+    }
   };
 
   const getMyDataRead = async (data) => {
     console.log("data  :: ", data);
-    let response = await Api.getMyDataRead(data);
-    let userObject = await response.data.response.User;
-    console.log(postObject);
+    const mydata = await Api.getMyDataRead(data);
+    const userObject = await mydata.response;
     setUser(userObject);
+  };
+
+  const getUserId = async () => {
+    const id = await AsyncStorage.getItem("user", async (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        let UserInfo = JSON.parse(result);
+        setUserId(UserInfo.login_id);
+        console.log("login_id : " + UserInfo.login_id);
+        await getMyDataRead(UserInfo.login_id);
+      }
+    });
   };
 
   useEffect(async () => {
     await getUserId();
   }, []);
+
+  const imageBox = (image) => {
+    let profile;
+    if (!image) {
+      profile =
+        "data:image/png;base64," +
+        "iVBORw0KGgoAAAANSUhEUgAAAMQAAAC3CAIAAADCcmZTAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATYSURBVHhe7d29ayRlAMfxxDuMoKKgoKCn2NkIVhYKVwgWl0LxBURPREREEJTjrAULr7CwOCtFtFYs/AtsFMRK4UBBTVL4UpgEQZOrfXZnTHYnG/PiL8m8fB4+hN3ZSViYL89Mdh6SubXNZYgQEzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxAwlptXNpbXNlbXR1+ZLpAxwZtLTURlITAI6Dp2PqZy/1refjh5PPOVYdTumUtKvf1+pHuxsaObGMRPVkeh2TLtPQuVau7GFI9fHa6arSjoZPYtJRiepjzMTJ6QPMW1daI+/duni+pPPP77r7juL995/p/FSF5mZTsyXP396zan5uWrMz517+0xjh87pdkzrV1fKtDR5n+Tyh5fKoakO0usXXxlvnHkhdfITWJmWxh3VY35+ruvzU59mpqXrbz1dH5mJsWO3VigllXoaY+G6hcZu3dLtmMbT0vbT+phMj8kd2qNcJ9Xvb3o0duuWPs1MXYrp5YvP1u9vYrzw0vnGbt0iphPz6OPn6rc4Hvc/fUtjh87pXEyTnwI0r6yfee7J+sj8Ox5+5GzZs50fGfy2/sNjTyxW77MHJRXdiqkZxB8bP04+LYenOjbVePHNxV/+Gt0GbrPvl79pbOmuXp3mijfefb4q6aFXb5t+qZ13Wnp1/6ejMc08BvXGclL7ae3r6WmsV8estTo7M9VLA/ZTiZKOSd9OczPTqW7etfMyvE/6F9PI+nZS5cGsgKx5OgKdjGn3OWYqkVnLdjV0hPo5M+1icrra2kjMMGJyUjsWQ4hpj5Ke+uCeMw/ckF1OVH7mTXdcW/RgldL+9T6mveekauHK6YX5xvZDKyUt3Hiq+uw0+GPbr98x7evsVh31MhrbD2eypDL6cdNtn4ZxzfSfyuRRHfgHm3dgDmzIJRVDj2l1c+mL7z7bWm7wf3oql0dDLqkwM438/uf2coND9FRdbtffPx4DLKkQU+21t87XIRywp8aprYxhllSIaWS0lnxj6cryV5PL6/b8xX7nhHTv4s0Xvr2vsdtwiGlk667L5PnuoGOwE9IWMTVd+uhCXcdBhpIKMdXWp2+5nL1we53JXkNGW8REjJi2NSYnDkpMUyZW1XFgYtphPD+p6hDERIyYiBETMWIiRkzEiIkYMREjJmLERIyYiBETMWIiRkzEiIkYMREjpo5Z3WjvX1IUUweM/0XMytqu/7+6LcREjJiIERMxYmq1WX8wuL3ERIyY2mzGpwDj3+yaG1tCTC01M5o2l1SIiRgxESOmNmr56Ww3YiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJgI2Vz+B/0FiQ6CNpa1AAAAAElFTkSuQmCC";
+    } else {
+      profile = "data:image/png;base64," + image;
+    }
+    return (
+      <View style={[styles.profile]}>
+        <Image
+          style={[styles.user_image]}
+          source={{
+            uri: profile,
+          }}
+        />
+      </View>
+    );
+  };
+
+  const [isReady, setIsReady] = useState(false);
+  const onFinish = () => setIsReady(true);
+  const startLoading = async () => {
+    await getUserId();
+  };
+  if (!isReady) {
+    return (
+      <AppLoading
+        startAsync={startLoading}
+        onFinish={onFinish}
+        onError={console.error}
+      />
+    );
+  }
 
   return (
     <SafeAreaView>
@@ -52,12 +103,7 @@ export default (props) => {
           <View style={styles.topArea}>
             <View>
               <View style={styles.buttonContainer}>
-                <View>
-                  <Image
-                    style={[styles.user_image]}
-                    source={"./src/image/profile.png"}
-                  />
-                </View>
+                <View>{imageBox(user.profile_image)}</View>
               </View>
 
               {/* <View>
@@ -66,22 +112,43 @@ export default (props) => {
 
               <View style={styles.TextArea}>
                 <Text style={styles.Text}>
-                  닉네임 : nickname{"\n"}
+                  아이디 : {user.login_id}
                   {"\n"}
-                  ID : aaa2 {"\n"}
                   {"\n"}
-                  Email : aaa2@kumoh.ac.kr {"\n"}
+                  닉네임 : {user.nickname}
                   {"\n"}
-                  등급 : 강낭콩
+                  {"\n"}
+                  이메일 : {user.email}
+                  {"\n"}
+                  {"\n"}
+                  포인트 : {user.point} {"\n"}
                 </Text>
               </View>
 
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => props.navigation.push("MypageUpdate")}
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 5,
+                  margin: 5,
+                }}
               >
-                <Text style={{ color: "black", fontSize: wp("4%") }}>수정</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => props.navigation.push("MypageUpdate")}
+                >
+                  <Text style={{ color: "black", fontSize: wp("4%") }}>
+                    수정
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => pressLogout()}
+                >
+                  <Text style={{ color: "black", fontSize: wp("4%") }}>
+                    로그아웃
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.TextArea_s}>
@@ -89,7 +156,14 @@ export default (props) => {
                 <View style={styles.Ic}>
                   <Icon name="th-list" size={30} color="#696969" />
                 </View>
-                내가 등록한 상품 조회
+                <TouchableOpacity
+                  style={styles.btn_my}
+                  onPress={() => props.navigation.push("MyProductListScreen")}
+                >
+                  <Text style={{ color: "black", fontSize: wp("4%") }}>
+                    내가 등록한 상품 조회
+                  </Text>
+                </TouchableOpacity>
               </Text>
             </View>
             <View style={styles.TextArea_s}>
@@ -97,15 +171,30 @@ export default (props) => {
                 <View style={styles.Ic}>
                   <Icon name="heart" size={30} color="#696969" />
                 </View>
-                내가 찜한 상품 조회
+                <TouchableOpacity
+                  style={styles.btn_my}
+                  onPress={() => props.navigation.push("MyWishListScreen")}
+                >
+                  <Text style={{ color: "black", fontSize: wp("4%") }}>
+                    내가 찜한 상품 조회
+                  </Text>
+                </TouchableOpacity>
               </Text>
             </View>
+
             <View style={styles.TextArea_s}>
               <Text style={styles.Text}>
                 <View style={styles.Ic}>
                   <Icon name="inbox" size={30} color="#696969" />
                 </View>
-                내가 거래한 상품 조회
+                <TouchableOpacity
+                  style={styles.btn_my}
+                  onPress={() => props.navigation.push("MyProductDealScreen")}
+                >
+                  <Text style={{ color: "black", fontSize: wp("4%") }}>
+                    내가 거래한 상품 조회
+                  </Text>
+                </TouchableOpacity>
               </Text>
             </View>
           </View>
@@ -154,11 +243,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#BCD593",
+    margin: 5,
   },
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
     margin: "auto",
+    marginBottom: 10,
   },
   Ic: {
     paddingRight: 10,
@@ -174,8 +265,8 @@ const styles = StyleSheet.create({
   },
   user_image: {
     borderRadius: 100,
-    width: wp(30),
-    height: hp(18),
+    width: 100,
+    height: 100,
     marginTop: 18,
   },
 });

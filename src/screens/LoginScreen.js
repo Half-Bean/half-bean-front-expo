@@ -18,6 +18,8 @@ import {
 
 import Api from "../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import client from "../socket-io/client";
+import { createIconSetFromFontello } from "react-native-vector-icons";
 
 export default (props) => {
   const [loading, setLoading] = useState(false);
@@ -55,7 +57,7 @@ export default (props) => {
     setLoading(true);
 
     const response = await Api.postLogin(userId, userPassword);
-    console.log(response);
+    //console.log(response);
     if (!response) {
       //setErrortext("아이디와 비밀번호를 다시 한 번 확인해주세요.");
       alert("아이디와 비밀번호를 다시 한 번 확인해주세요.");
@@ -63,13 +65,19 @@ export default (props) => {
       return;
     } else {
       if (response.success === true) {
+        client.emit("setUserPool", {
+          nickname: response.response.nickname,
+        });
+
         alert(response.response.nickname + "님 반가워요 :)");
         //await AsyncStorage.setItem("token", response.token);
+
         let user = {
           user_id: response.response.user_id,
           login_id: response.response.login_id,
           token: response.token,
         };
+
         await AsyncStorage.setItem("user", JSON.stringify(user), (err) => {
           if (err) {
             console.log(err);

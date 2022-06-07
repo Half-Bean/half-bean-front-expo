@@ -76,7 +76,7 @@ export default (props) => {
         </View>
       </View>
       <View style={{ flexGrow: 1 }}>
-        <ProductsList post={posts} />
+        <ProductsList post={posts} category={groundValue} />
       </View>
       {NewProduct()}
     </SafeAreaView>

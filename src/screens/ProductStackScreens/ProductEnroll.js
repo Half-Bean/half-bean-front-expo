@@ -1,64 +1,204 @@
 import React, { useState, useEffect } from "react";
+import { CommonActions } from "@react-navigation/native";
 import {
   SafeAreaView,
   StyleSheet,
   Text,
-  Button,
   TextInput,
   View,
   TouchableOpacity,
   Keyboard,
   ScrollView,
   Alert,
+  Image,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { Colors } from "react-native-paper";
-
+import { Colors, Checkbox, Button } from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
+import RNPickerSelect from "react-native-picker-select";
 import Api from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
 
 export default (props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [price, setPrice] = useState("");
+  const [checked, setChecked] = React.useState(false);
+
   const [userId, setUserId] = useState();
 
   const getUserId = async () => {
-    const id = await AsyncStorage.getItem("user_id", (err, result) => {
-      console.log(result); // User1 출력
+    await AsyncStorage.getItem("user", (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        let UserInfo = JSON.parse(result);
+        setUserId(UserInfo.user_id);
+        console.log("user_id : " + UserInfo.user_id);
+      }
     });
-    await setUserId(id);
-    console.log(id);
   };
 
   useEffect(async () => {
     await getUserId();
   }, []);
 
+  // 이미지 부분
+  // 이미지 미리보기 clear
+  const clearImage = () => {
+    setImageUrl("");
+    setImage("");
+  };
+  // 이미지 not null일 때 view
+  const imageBox = (image) => {
+    let i =
+      "data:image/png;base64," +
+      "iVBORw0KGgoAAAANSUhEUgAAAMQAAAC3CAIAAADCcmZTAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATYSURBVHhe7d29ayRlAMfxxDuMoKKgoKCn2NkIVhYKVwgWl0LxBURPREREEJTjrAULr7CwOCtFtFYs/AtsFMRK4UBBTVL4UpgEQZOrfXZnTHYnG/PiL8m8fB4+hN3ZSViYL89Mdh6SubXNZYgQEzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxAwlptXNpbXNlbXR1+ZLpAxwZtLTURlITAI6Dp2PqZy/1refjh5PPOVYdTumUtKvf1+pHuxsaObGMRPVkeh2TLtPQuVau7GFI9fHa6arSjoZPYtJRiepjzMTJ6QPMW1daI+/duni+pPPP77r7juL995/p/FSF5mZTsyXP396zan5uWrMz517+0xjh87pdkzrV1fKtDR5n+Tyh5fKoakO0usXXxlvnHkhdfITWJmWxh3VY35+ruvzU59mpqXrbz1dH5mJsWO3VigllXoaY+G6hcZu3dLtmMbT0vbT+phMj8kd2qNcJ9Xvb3o0duuWPs1MXYrp5YvP1u9vYrzw0vnGbt0iphPz6OPn6rc4Hvc/fUtjh87pXEyTnwI0r6yfee7J+sj8Ox5+5GzZs50fGfy2/sNjTyxW77MHJRXdiqkZxB8bP04+LYenOjbVePHNxV/+Gt0GbrPvl79pbOmuXp3mijfefb4q6aFXb5t+qZ13Wnp1/6ejMc08BvXGclL7ae3r6WmsV8estTo7M9VLA/ZTiZKOSd9OczPTqW7etfMyvE/6F9PI+nZS5cGsgKx5OgKdjGn3OWYqkVnLdjV0hPo5M+1icrra2kjMMGJyUjsWQ4hpj5Ke+uCeMw/ckF1OVH7mTXdcW/RgldL+9T6mveekauHK6YX5xvZDKyUt3Hiq+uw0+GPbr98x7evsVh31MhrbD2eypDL6cdNtn4ZxzfSfyuRRHfgHm3dgDmzIJRVDj2l1c+mL7z7bWm7wf3oql0dDLqkwM438/uf2coND9FRdbtffPx4DLKkQU+21t87XIRywp8aprYxhllSIaWS0lnxj6cryV5PL6/b8xX7nhHTv4s0Xvr2vsdtwiGlk667L5PnuoGOwE9IWMTVd+uhCXcdBhpIKMdXWp2+5nL1we53JXkNGW8REjJi2NSYnDkpMUyZW1XFgYtphPD+p6hDERIyYiBETMWIiRkzEiIkYMREjJmLERIyYiBETMWIiRkzEiIkYMREjpo5Z3WjvX1IUUweM/0XMytqu/7+6LcREjJiIERMxYmq1WX8wuL3ERIyY2mzGpwDj3+yaG1tCTC01M5o2l1SIiRgxESOmNmr56Ww3YiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJgI2Vz+B/0FiQ6CNpa1AAAAAElFTkSuQmCC";
+    let j = "data:application/octet-stream;base64,W29iamVjdCBPYmplY3Rd";
+    return (
+      <View style={[styles.viewRow]}>
+        <View style={[styles.groundArea]}>
+          <Text>미리보기 {">>"}</Text>
+        </View>
+        <View style={[styles.viewColumn]}>
+          <Image
+            style={[styles.image]}
+            source={{
+              uri: imageUrl,
+            }}
+          />
+        </View>
+        <View style={styles.btnArea2}>
+          <Button icon="close" mode="outline" onPress={() => clearImage()} />
+        </View>
+      </View>
+    );
+  };
+
+  // 권한 요청 hook
+  const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+  const [image, setImage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const uploadImage = async () => {
+    // 권한 확인 코드 : 없으면 물어보고, 승인하지 않으면 종료
+    if (!status?.granted) {
+      const permission = await requestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+    // 이미지 업로드 기능
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+      aspect: [1, 1],
+    });
+    if (result.cancelled) {
+      return null;
+    }
+    // 이미지 업로드 결과 및 이미지 경로 업데이트
+    console.log(result);
+    setImageUrl(result.uri);
+
+    const blob = await FileSystem.readAsStringAsync(result.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    setImage(blob);
+  };
+
+  const [groundValue, setGroundValue] = useState("전체");
+  const [areaId, setAreaId] = useState(1);
+
+  // 위치가 바뀌면
+  const onChangeGround = (value) => {
+    //console.warn(value);
+    setGroundValue(value);
+    if (value) {
+      if (value === "전체") {
+        setAreaId(1);
+      }
+      if (value === "학교앞") {
+        setAreaId(2);
+      }
+      if (value === "기숙사") {
+        setAreaId(3);
+      }
+      if (value === "구옥계") {
+        setAreaId(4);
+      }
+      if (value === "옥계중") {
+        setAreaId(5);
+      }
+      if (value === "거상빌딩") {
+        setAreaId(6);
+      }
+    }
+  };
+
+  const [categoryValue, setCategoryValue] = useState("초소량 거래");
+
+  const onChangeCategory = async (value) => {
+    setCategoryValue(value);
+  };
+
   const postEnroll = async () => {
+    // 오류 예외 처리
+    if (!title) {
+      alert("제목이 입력되지 않았습니다.");
+      return;
+    }
+    if (!content) {
+      alert("내용이 입력되지 않았습니다.");
+      return;
+    }
+    if (!price) {
+      alert("가격을 입력해주세요.");
+      return;
+    }
+    if (title.length < 3) {
+      alert("제목이 너무 짧습니다. 최소 3자 이상으로 입력해주세요.");
+      return;
+    }
+    if (content.length < 5) {
+      alert("내용이 너무 짧습니다. 최소 5자 이상으로 입력해주세요.");
+      return;
+    }
+    if (!(parseInt(price) >= 0)) {
+      alert("가격 값이 잘못되었습니다. 올바른 값을 입력해주세요.");
+      return;
+    }
+
+    // 오류가 없다면
     const postObject = {
-      user_id: 2,
+      user_id: userId,
       title: title,
       content: content,
-      category: "초소량거래",
-      isSoldout: "거래중",
-      image: null,
+      category: categoryValue,
+      isSoldout: false,
+      image: image,
+      price: price,
       visual_open: true,
-      isHurry: false,
+      isHurry: checked,
       hit: 0,
       blame_count: 0,
-      area_id: 1,
+      area_id: areaId,
     };
     console.log(postObject);
     console.log("=============");
     const response = await Api.postProductEnroll(postObject);
     console.log(response);
     if (response.success === true) {
-      alert("상품 등록 성공!");
+      alert("상품 등록이 정상적으로 완료되었습니다.");
+      props.navigation.dispatch(CommonActions.navigate("Home"));
+      return;
     } else {
-      alert("올바른 값을 입력하세요");
+      alert("상품 등록에 실패하였습니다.");
     }
   };
 
@@ -95,6 +235,69 @@ export default (props) => {
               value={title}
             />
           </View>
+          <View style={[styles.viewRow]}>
+            <View style={[styles.groundArea]}>
+              <Text>분류 {">>"}</Text>
+            </View>
+            <View style={[styles.groundArea]}>
+              <RNPickerSelect
+                textInputProps={{ underlineColorAndroid: "transparent" }}
+                useNativeAndroidPickerStyle={false}
+                fixAndroidTouchableBug={true}
+                items={[
+                  { label: "초소량 거래", value: "초소량 거래" },
+                  { label: "대여", value: "대여" },
+                  { label: "배달비 쉐어", value: "배달비 쉐어" },
+                  { label: "슈퍼맨", value: "슈퍼맨" },
+                ]}
+                value={categoryValue}
+                onValueChange={(value) => onChangeCategory(value)}
+              >
+                <Text style={[styles.ground]}>{categoryValue}</Text>
+              </RNPickerSelect>
+            </View>
+            <View style={[styles.groundArea]}>
+              <Text>거래지역 {">>"}</Text>
+            </View>
+            <View style={[styles.groundArea]}>
+              <RNPickerSelect
+                textInputProps={{ underlineColorAndroid: "transparent" }}
+                useNativeAndroidPickerStyle={false}
+                fixAndroidTouchableBug={true}
+                items={[
+                  { label: "전체", value: "전체" },
+                  { label: "학교앞", value: "학교앞" },
+                  { label: "기숙사", value: "기숙사" },
+                  { label: "구옥계", value: "구옥계" },
+                  { label: "옥계중", value: "옥계중" },
+                  { label: "거상빌딩", value: "거상빌딩" },
+                ]}
+                value={groundValue}
+                onValueChange={(value) => onChangeGround(value)}
+              >
+                <Text style={[styles.ground]}>{groundValue}</Text>
+              </RNPickerSelect>
+            </View>
+          </View>
+          <View style={[styles.viewRow]}>
+            <View style={[styles.groundArea]}>
+              <Text>가격 {">>"}</Text>
+            </View>
+            <View style={styles.topArea}>
+              <TextInput
+                placeholder="가격을 입력하세요"
+                style={styles.textFormTop}
+                onChangeText={(price) => setPrice(price)}
+                returnKeyType="next"
+                keyboardType="default"
+                onSubmitEditing={Keyboard.dismiss}
+                value={price}
+              />
+            </View>
+            <View style={[styles.groundArea]}>
+              <Text style={{ marginRight: 10 }}> 원 </Text>
+            </View>
+          </View>
           <View style={styles.textArea}>
             <TextInput
               placeholder="내용을 입력하세요"
@@ -107,8 +310,25 @@ export default (props) => {
               multiline={true}
             />
           </View>
+          <View style={styles.btnArea}>
+            <Button
+              icon="camera"
+              mode="contained"
+              color="#F4D76E"
+              onPress={() => uploadImage()}
+            >
+              사진 등록
+            </Button>
+          </View>
+          {imageUrl ? imageBox(imageUrl) : null}
           <View style={styles.hurryArea}>
-            <Text style={styles.Text}>ㅁ 긴급</Text>
+            <Checkbox
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => {
+                setChecked(!checked);
+              }}
+            />
+            <Text style={styles.hurryText}>긴급</Text>
           </View>
           <View style={styles.textArea}>
             <Text style={styles.flexbox}>
@@ -151,6 +371,36 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
   },
+  viewRow: {
+    flexDirection: "row",
+    paddingLeft: 15,
+    borderRadius: 7,
+  },
+  viewColumn: {
+    padding: 15,
+    flex: 1,
+    marginRight: -20,
+  },
+  image: {
+    height: 120,
+    width: "100%",
+  },
+  groundArea: { margin: 1, justifyContent: "center" },
+  ground: {
+    backgroundColor: Colors.white,
+    fontSize: 15,
+    fontWeight: "bold",
+    color: Colors.blueGrey700,
+    borderRadius: 12,
+    margin: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    padding: 15,
+    paddingTop: 10,
+    elevation: 10,
+    borderRadius: 7,
+    justifyContent: "center",
+  },
   textArea: {
     //글배경..?
     flex: 1,
@@ -159,9 +409,23 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center", //추가 - 여기서 가운데정렬됨
   },
+  btnArea: {
+    marginTop: -10,
+    padding: 10,
+    width: "40%",
+  },
+  btnArea2: {
+    marginTop: -10,
+    padding: 10,
+    width: "10%",
+    marginRight: 30,
+  },
   TitleText: {
     fontSize: wp(8),
     paddingBottom: wp("1%"),
+  },
+  hurryText: {
+    fontSize: 15,
   },
   Text: {
     fontSize: 12,
@@ -183,10 +447,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderBottomWidth: 2,
     borderColor: "black",
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-    borderBottomLeftRadius: 7,
-    borderBottomRightRadius: 7,
+    borderRadius: 7,
     width: "100%",
     height: hp(7),
     padding: 10,
@@ -195,10 +456,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderBottomWidth: 2,
     borderColor: "black",
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-    borderBottomLeftRadius: 7,
-    borderBottomRightRadius: 7,
+    borderRadius: 7,
     width: "100%",
     height: 200,
     padding: 10,
@@ -212,7 +470,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   flexbox: {
-    marginTop: 10,
+    fontSize: 13,
     backgroundColor: "#fff0f5",
   },
   btn: {
@@ -230,8 +488,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   hurryArea: {
-    flex: 1,
-    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
     paddingTop: 5,
     marginRight: 10,
   },

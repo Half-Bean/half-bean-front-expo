@@ -107,7 +107,7 @@ export default (props) => {
         </View>
       </View>
       <View style={{ flexGrow: 1 }}>
-        <Peed post={posts} />
+        <Peed post={posts} area={areaId} />
       </View>
       {NewProduct()}
     </SafeAreaView>

@@ -9,11 +9,14 @@ import SignupScreen from "../screens/SignupScreen";
 // MypageStackScreens
 import MypageScreen from "../screens/MypageStackScreens/MypageScreen";
 import MemberInfoUpdate from "../screens/MypageStackScreens/MemberInfoUpdate";
+import MyProductListScreen from "../screens/MypageStackScreens/MyProductListScreen";
+import MyProductsList from "../screens/MypageStackScreens/MyProductsList";
+import MyWishListScreen from "../screens/MypageStackScreens/MyWishListScreen";
+import MyProductDealScreen from "../screens/MypageStackScreens/MyProductDealScreen";
+import MyProductRead from "../screens/MypageStackScreens/MyProductRead";
 // ChatStackScreens
 import ChatListScreen from "../screens/ChatStackScreens/ChatListScreen";
 import ChatScreen from "../screens/ChatStackScreens/ChatScreen";
-// NoticeStackScreens
-import NoticeListScreen from "../screens/NoticeStackScreens/NoticeListScreen";
 // ProductStackScreens
 import ProductListScreen from "../screens/ProductStackScreens/ProductListScreen";
 import ProductEnroll from "../screens/ProductStackScreens/ProductEnroll";
@@ -24,14 +27,12 @@ import ProductsList from "../screens/ProductStackScreens/ProductsList";
 import ProductsAroundOfMe from "../screens/HomeStackScreens/ProductsAroundOfMe";
 import NewProductRead from "../screens/HomeStackScreens/NewProductRead";
 import Peed from "../screens/HomeStackScreens/Peed";
-import BackBtn from "../components/BackBtn";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ProductStack = createStackNavigator();
 const MypageStack = createStackNavigator();
 const HomeStack = createStackNavigator();
-const NoticeStack = createStackNavigator();
 const ChatStack = createStackNavigator();
 
 const ProductStackScreen = () => {
@@ -95,6 +96,51 @@ const MypageStackScreen = () => {
           headerBackTitleVisible: false,
         }}
       />
+      <MypageStack.Screen
+        name="MyProductsList"
+        component={MyProductsList}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <MypageStack.Screen
+        name="MyProductListScreen"
+        component={MyProductListScreen}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <MypageStack.Screen
+        name="MyWishListScreen"
+        component={MyWishListScreen}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <MypageStack.Screen
+        name="MyProductDealScreen"
+        component={MyProductDealScreen}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <MypageStack.Screen
+        name="MyProductRead"
+        component={MyProductRead}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -143,18 +189,6 @@ const HomeStackScreen = () => {
   );
 };
 
-const NoticeStackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <NoticeStack.Screen
-        name="Notice"
-        component={NoticeListScreen}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-};
-
 const ChatStackScreen = () => {
   return (
     <Stack.Navigator>
@@ -166,7 +200,11 @@ const ChatStackScreen = () => {
       <ChatStack.Screen
         name="ChatScreen"
         component={ChatScreen}
-        options={{ headerShown: false }}
+        options={{
+          gestureEnabled: false,
+          title: "",
+          headerBackTitleVisible: false,
+        }}
       />
     </Stack.Navigator>
   );
@@ -189,10 +227,6 @@ const MainTabScreen = ({ navigation, route }) => {
             iconName = focused ? "person-circle" : "person-circle-outline";
           } else if (route.name === "HomeStack") {
             iconName = focused ? "ios-home" : "ios-home-outline";
-          } else if (route.name === "NoticeStack") {
-            iconName = focused
-              ? "notifications-circle"
-              : "notifications-circle-outline";
           } else if (route.name === "ChatStack") {
             iconName = focused ? "ios-chatbubble" : "ios-chatbubble-outline";
           }
@@ -202,20 +236,6 @@ const MainTabScreen = ({ navigation, route }) => {
       })}
     >
       <Tab.Screen
-        name="ProductStack"
-        component={ProductStackScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name="MypageStack"
-        component={MypageStackScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
         name="HomeStack"
         component={HomeStackScreen}
         options={{
@@ -223,8 +243,8 @@ const MainTabScreen = ({ navigation, route }) => {
         }}
       />
       <Tab.Screen
-        name="NoticeStack"
-        component={NoticeStackScreen}
+        name="ProductStack"
+        component={ProductStackScreen}
         options={{
           headerShown: false,
         }}
@@ -232,6 +252,13 @@ const MainTabScreen = ({ navigation, route }) => {
       <Tab.Screen
         name="ChatStack"
         component={ChatStackScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="MypageStack"
+        component={MypageStackScreen}
         options={{
           headerShown: false,
         }}

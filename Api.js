@@ -158,8 +158,8 @@ const Api = {
         });
     },
     // 로그아웃
-    postLogout: async() => {
-        return await postJsonRequest("/auth/logout");
+    postLogout: async(login_id) => {
+        return await postJsonRequest("/auth/logout", { login_id });
     },
     // 아이디 중복확인
     getDoubleCheckId: async(login_id) => {
@@ -205,7 +205,8 @@ const Api = {
     },
     // 다른 회원 정보 조회
     getUserDataRead: async(userId) => {
-        return await getRequest('/user/${userId}');
+        console.log("userid", userId);
+        return await getRequest(`/user/${userId}`);
     },
     // 회원 탈퇴
     deleteUser: async() => {
@@ -214,6 +215,9 @@ const Api = {
 
     // ============Post=============
     // 내가 등록한 상품 조회
+    postMyProduct: async(user_id) => {
+        return await postJsonRequest("/post/mypost", { user_id });
+    },
     // 내가 찜한 상품 조회
     // 내가 거래한 상품 조회
 
@@ -237,6 +241,14 @@ const Api = {
     postProductEnroll: async(postObject) => {
         return await postJsonRequest('/post', postObject);
     },
+    // 상품 수정
+    putProductUpdate: async(postId, postObject) => {
+        return await putJsonRequest(`/post/${postId}`, postObject);
+    },
+    // 상품 삭제
+    deleteProduct: async(postId) => {
+        return await deleteJsonRequest(`/post/${postId}`);
+    },
     // 조회수 증가
     putPostHit: async(post_id) => {
         return await putJsonRequest('/post/hit', { post_id });
@@ -246,6 +258,21 @@ const Api = {
     postBlame: async(blameObject) => {
         return await postJsonRequest('/blame', blameObject);
     },
+
+    // ============Chat=============
+    // 채팅내용 가져오기
+    postChatRead: async(chatroom_id) => {
+        return await postJsonRequest('/chat', { chatroom_id });
+    },
+    // 채팅방 생성
+    postCreateChatroom: async(userObject) => {
+        return await postJsonRequest('/chat/room', userObject);
+    },
+    // 채팅방 리스트 요청
+    postChatroomListRead: async(user_id) => {
+        return await postJsonRequest('/chat/roomlist', { user_id });
+    },
+
 
     // ============Admin=============
     // 회원 정보 조회

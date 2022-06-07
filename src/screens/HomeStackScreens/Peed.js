@@ -9,10 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import Api from "../../../Api";
 
 export default (props) => {
   const navigation = useNavigation();
@@ -37,15 +34,13 @@ export default (props) => {
   };
 
   const imageBox = (image) => {
-    let i =
-      "data:image/png;base64," +
-      "iVBORw0KGgoAAAANSUhEUgAAAMQAAAC3CAIAAADCcmZTAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATYSURBVHhe7d29ayRlAMfxxDuMoKKgoKCn2NkIVhYKVwgWl0LxBURPREREEJTjrAULr7CwOCtFtFYs/AtsFMRK4UBBTVL4UpgEQZOrfXZnTHYnG/PiL8m8fB4+hN3ZSViYL89Mdh6SubXNZYgQEzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxAwlptXNpbXNlbXR1+ZLpAxwZtLTURlITAI6Dp2PqZy/1refjh5PPOVYdTumUtKvf1+pHuxsaObGMRPVkeh2TLtPQuVau7GFI9fHa6arSjoZPYtJRiepjzMTJ6QPMW1daI+/duni+pPPP77r7juL995/p/FSF5mZTsyXP396zan5uWrMz517+0xjh87pdkzrV1fKtDR5n+Tyh5fKoakO0usXXxlvnHkhdfITWJmWxh3VY35+ruvzU59mpqXrbz1dH5mJsWO3VigllXoaY+G6hcZu3dLtmMbT0vbT+phMj8kd2qNcJ9Xvb3o0duuWPs1MXYrp5YvP1u9vYrzw0vnGbt0iphPz6OPn6rc4Hvc/fUtjh87pXEyTnwI0r6yfee7J+sj8Ox5+5GzZs50fGfy2/sNjTyxW77MHJRXdiqkZxB8bP04+LYenOjbVePHNxV/+Gt0GbrPvl79pbOmuXp3mijfefb4q6aFXb5t+qZ13Wnp1/6ejMc08BvXGclL7ae3r6WmsV8estTo7M9VLA/ZTiZKOSd9OczPTqW7etfMyvE/6F9PI+nZS5cGsgKx5OgKdjGn3OWYqkVnLdjV0hPo5M+1icrra2kjMMGJyUjsWQ4hpj5Ke+uCeMw/ckF1OVH7mTXdcW/RgldL+9T6mveekauHK6YX5xvZDKyUt3Hiq+uw0+GPbr98x7evsVh31MhrbD2eypDL6cdNtn4ZxzfSfyuRRHfgHm3dgDmzIJRVDj2l1c+mL7z7bWm7wf3oql0dDLqkwM438/uf2coND9FRdbtffPx4DLKkQU+21t87XIRywp8aprYxhllSIaWS0lnxj6cryV5PL6/b8xX7nhHTv4s0Xvr2vsdtwiGlk667L5PnuoGOwE9IWMTVd+uhCXcdBhpIKMdXWp2+5nL1we53JXkNGW8REjJi2NSYnDkpMUyZW1XFgYtphPD+p6hDERIyYiBETMWIiRkzEiIkYMREjJmLERIyYiBETMWIiRkzEiIkYMREjpo5Z3WjvX1IUUweM/0XMytqu/7+6LcREjJiIERMxYmq1WX8wuL3ERIyY2mzGpwDj3+yaG1tCTC01M5o2l1SIiRgxESOmNmr56Ww3YiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJgI2Vz+B/0FiQ6CNpa1AAAAAElFTkSuQmCC";
+    let images = "data:image/png;base64," + image;
     return (
       <View style={[styles.viewColumn]}>
         <Image
           style={[styles.image]}
           source={{
-            uri: i,
+            uri: images,
           }}
         />
       </View>
@@ -99,7 +94,7 @@ export default (props) => {
                 </Text>
               </View>
             </View>
-            {!item.image ? imageBox(item.image) : null}
+            {item.image ? imageBox(item.image) : null}
           </View>
         </View>
       </Pressable>
@@ -108,11 +103,33 @@ export default (props) => {
 
   const [data, setData] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await getProductsListRead();
+    setIsRefreshing(false);
+  };
+
+  const getProductsListRead = async () => {
+    console.log(props.area);
+    if (props.area === 1) {
+      let response = await Api.getProductsListRead();
+      const post = await response.data.response.posts;
+      setData(post);
+      setLoading(false);
+    } else {
+      let response = await Api.getProductsOfAreaListRead(props.area);
+      const post = await response.data.response.posts;
+      setData(post);
+      setLoading(false);
+    }
+  };
 
   const getData = () => {
-    setLoading(true);
     setData(props.post);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -124,6 +141,8 @@ export default (props) => {
       <FlatList
         data={data}
         renderItem={renderItem}
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={() => (
           <View style={[styles.empty]}>
@@ -148,7 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     marginTop: 20,
-    marginBottom: -5,
+    marginBottom: 1,
     margin: 10,
     elevation: 5,
     borderRadius: 10,

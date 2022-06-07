@@ -14,48 +14,57 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { Colors } from "react-native-paper";
 import Api from "../../../Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default (props) => {
   const route = useRoute();
+  const navigation = useNavigation();
 
-  const imageBox = (image) => {
-    let profile;
-    if (!image) {
-      profile =
-        "data:image/png;base64," +
-        "iVBORw0KGgoAAAANSUhEUgAAAMQAAAC3CAIAAADCcmZTAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAATYSURBVHhe7d29ayRlAMfxxDuMoKKgoKCn2NkIVhYKVwgWl0LxBURPREREEJTjrAULr7CwOCtFtFYs/AtsFMRK4UBBTVL4UpgEQZOrfXZnTHYnG/PiL8m8fB4+hN3ZSViYL89Mdh6SubXNZYgQEzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxIiJGDERIyZixESMmIgREzFiIkZMxAwlptXNpbXNlbXR1+ZLpAxwZtLTURlITAI6Dp2PqZy/1refjh5PPOVYdTumUtKvf1+pHuxsaObGMRPVkeh2TLtPQuVau7GFI9fHa6arSjoZPYtJRiepjzMTJ6QPMW1daI+/duni+pPPP77r7juL995/p/FSF5mZTsyXP396zan5uWrMz517+0xjh87pdkzrV1fKtDR5n+Tyh5fKoakO0usXXxlvnHkhdfITWJmWxh3VY35+ruvzU59mpqXrbz1dH5mJsWO3VigllXoaY+G6hcZu3dLtmMbT0vbT+phMj8kd2qNcJ9Xvb3o0duuWPs1MXYrp5YvP1u9vYrzw0vnGbt0iphPz6OPn6rc4Hvc/fUtjh87pXEyTnwI0r6yfee7J+sj8Ox5+5GzZs50fGfy2/sNjTyxW77MHJRXdiqkZxB8bP04+LYenOjbVePHNxV/+Gt0GbrPvl79pbOmuXp3mijfefb4q6aFXb5t+qZ13Wnp1/6ejMc08BvXGclL7ae3r6WmsV8estTo7M9VLA/ZTiZKOSd9OczPTqW7etfMyvE/6F9PI+nZS5cGsgKx5OgKdjGn3OWYqkVnLdjV0hPo5M+1icrra2kjMMGJyUjsWQ4hpj5Ke+uCeMw/ckF1OVH7mTXdcW/RgldL+9T6mveekauHK6YX5xvZDKyUt3Hiq+uw0+GPbr98x7evsVh31MhrbD2eypDL6cdNtn4ZxzfSfyuRRHfgHm3dgDmzIJRVDj2l1c+mL7z7bWm7wf3oql0dDLqkwM438/uf2coND9FRdbtffPx4DLKkQU+21t87XIRywp8aprYxhllSIaWS0lnxj6cryV5PL6/b8xX7nhHTv4s0Xvr2vsdtwiGlk667L5PnuoGOwE9IWMTVd+uhCXcdBhpIKMdXWp2+5nL1we53JXkNGW8REjJi2NSYnDkpMUyZW1XFgYtphPD+p6hDERIyYiBETMWIiRkzEiIkYMREjJmLERIyYiBETMWIiRkzEiIkYMREjpo5Z3WjvX1IUUweM/0XMytqu/7+6LcREjJiIERMxYmq1WX8wuL3ERIyY2mzGpwDj3+yaG1tCTC01M5o2l1SIiRgxESOmNmr56Ww3YiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJiIERMxYiJGTMSIiRgxESMmYsREjJgI2Vz+B/0FiQ6CNpa1AAAAAElFTkSuQmCC";
-    } else {
-      profile = "data:image/png;base64," + image;
+  const deleteProduct = async () => {
+    const response = await Api.deleteProduct(props.route.params.post_id);
+    if (response) {
+      alert("상품이 삭제되었습니다.");
+      props.navigation.push("MainTab");
     }
-    return (
-      <View style={[styles.profile]}>
-        <Image
-          style={[styles.user_image]}
-          source={{
-            uri: profile,
-          }}
-        />
-      </View>
-    );
   };
 
+  // Button
+  // 채팅 버튼
+  const chatBtn = () => {
+    return (
+      <TouchableOpacity style={styles.btn} onPress={() => chatStart()}>
+        <Text style={{ color: "black", fontSize: wp("4%") }}>채팅하기</Text>
+      </TouchableOpacity>
+    );
+  };
+  // 수정 버튼
   const updateBtn = () => {
     return (
-      <View style={styles.btn_s}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => props.navigation.push("ProductUpdate")}
-        >
-          <Text style={{ color: "black", fontSize: wp("4%") }}>수정</Text>
-        </TouchableOpacity>
+      <View>
+        <View style={styles.btn_s}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() =>
+              navigation.navigate("ProductUpdate", {
+                post_id: props.route.params.post_id,
+              })
+            }
+          >
+            <Text style={{ color: "black", fontSize: wp("4%") }}>수정</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.btn_s}>
+          <TouchableOpacity style={styles.btn} onPress={() => deleteProduct()}>
+            <Text style={{ color: "black", fontSize: wp("4%") }}>삭제</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
-
+  // 신고 버튼
   const blameBtn = () => {
     return (
       <View
@@ -70,27 +79,7 @@ export default (props) => {
       </View>
     );
   };
-
-  const [user_id, setUser_id] = useState("");
-
-  const [data, setData] = useState();
-  const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const [post, setPost] = useState([]);
-  const [user, setUser] = useState([]);
-
-  const getData = async () => {
-    await setLoading(true);
-    //   fetch("http://jsonplaceholder.typicode.com/posts")
-    //     .then((res) => res.json())
-    //     .then((res) => setData(res));
-    await setData(props.route.params.post_id);
-    console.log(props.route.params.post_id);
-    console.log("----------------------");
-    await getProductDetailRead(props.route.params.post_id);
-  };
-
+  // 신고 알림
   const trueAlert = async () => {
     const blameObject = {
       user_id: user_id,
@@ -125,8 +114,56 @@ export default (props) => {
     );
   };
 
+  // 이미지 예외처리 함수
+  // 프로필 이미지
+  const imageBox = (image) => {
+    let profile = "data:image/png;base64," + image;
+    return (
+      <View style={[styles.profile]}>
+        <Image
+          style={[styles.user_image]}
+          source={{
+            uri: profile,
+          }}
+        />
+      </View>
+    );
+  };
+  // 상품 이미지
+  const ImageView = (image) => {
+    let images = "data:image/png;base64," + image;
+    return (
+      <View style={[styles.component]}>
+        <Image style={[styles.image]} source={{ uri: images }} />
+      </View>
+    );
+  };
+  const noImage = () => {
+    return (
+      <View style={[styles.component]}>
+        <Image
+          style={[styles.image]}
+          source={require(".\\src\\image\\nop_image.png")}
+        />
+      </View>
+    );
+  };
+
+  // 조회수 증가 api
   const putPostHit = async () => {
     const response = await Api.putPostHit(props.route.params.post_id);
+  };
+
+  const [data, setData] = useState();
+  const [post, setPost] = useState([]);
+  const [user, setUser] = useState([]);
+
+  // 상품 상세조회
+  const getData = async () => {
+    await setData(props.route.params.post_id);
+    console.log(props.route.params.post_id);
+    console.log("----------------------");
+    await getProductDetailRead(props.route.params.post_id);
   };
 
   const getProductDetailRead = async (data) => {
@@ -137,6 +174,8 @@ export default (props) => {
     await setPost(postObject);
     await setUser(userObject);
   };
+
+  const [user_id, setUser_id] = useState("");
 
   useEffect(async () => {
     await putPostHit();
@@ -151,6 +190,24 @@ export default (props) => {
       }
     });
   }, []);
+
+  // 채팅하기 버튼 눌렀을 때
+  const chatStart = async () => {
+    const userObj = {
+      user1: user_id,
+      user2: user.user_id,
+    };
+    console.log(userObj);
+    const response = await Api.postCreateChatroom(userObj);
+    console.log(response);
+    const chatroom_id = await response.response;
+    console.log(chatroom_id);
+    navigation.navigate("ChatScreen", {
+      chatroom_id: chatroom_id,
+      post_title: post.title,
+      nickname: user.nickname,
+    });
+  };
 
   const [isReady, setIsReady] = useState(false);
   const onFinish = () => setIsReady(true);
@@ -167,6 +224,7 @@ export default (props) => {
       }
     });
   };
+
   if (!isReady) {
     return (
       <AppLoading
@@ -180,31 +238,21 @@ export default (props) => {
     <SafeAreaView>
       <ScrollView style={[styles.bg]}>
         <View>
-          <View style={[styles.component]}>
-            <Image
-              style={[styles.image]}
-              source={require(".\\src\\image\\nop_image.png")}
-            />
-          </View>
+          {post.image ? ImageView(post.image) : noImage()}
           <View style={[styles.nickborder]}>
-            {imageBox(user.profile_image)}
-            <View style={[styles.nickText]}>
-              <View style={[styles.nicknameArea]}>
-                <Text style={[styles.nickname]}>{user.nickname}</Text>
-              </View>
-              <View style={[styles.areaArea]}>
-                <Text style={[styles.area]}>{post.Area.name}</Text>
+            <View style={[styles.nickprofile]}>
+              {imageBox(user.profile_image)}
+              <View style={[styles.nickText]}>
+                <View style={[styles.nicknameArea]}>
+                  <Text style={[styles.nickname]}>{user.nickname}</Text>
+                </View>
+                <View style={[styles.areaArea]}>
+                  <Text style={[styles.area]}>{post.Area.name}</Text>
+                </View>
               </View>
             </View>
             <View style={[styles.chatBtn]}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => props.navigation.push("ChatScreen")}
-              >
-                <Text style={{ color: "black", fontSize: wp("4%") }}>
-                  채팅하기
-                </Text>
-              </TouchableOpacity>
+              {user.user_id === user_id ? null : chatBtn()}
             </View>
           </View>
         </View>
@@ -304,8 +352,8 @@ const styles = StyleSheet.create({
   },
   user_image: {
     borderRadius: 100,
-    width: wp(15),
-    height: hp(9),
+    width: 60,
+    height: 60,
     borderColor: "black",
     borderWidth: 2,
   },
@@ -314,6 +362,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     textAlign: "left",
+  },
+  nickprofile: {
+    backgroundColor: "white",
+    textAlign: "center",
+    alignItems: "center",
+    flexDirection: "row",
   },
   nickborder: {
     backgroundColor: "white",
@@ -343,7 +397,7 @@ const styles = StyleSheet.create({
   },
   nickText: {
     flexDirection: "column",
-    paddingRight: 120,
+    //marginLeft: -50,
   },
   minidata: {
     marginTop: -10,
